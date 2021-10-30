@@ -18,3 +18,7 @@ He realizado varias modificaciones:
  <li>El OSD se saca con la tecla <b>F1</b></li>
  <li>No están todas las teclas mapeadas</li> 
 </ul>
+
+<br><br>
+<h1>Modo Hi-res</h1>
+<center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewMetropolis.gif'></center>
