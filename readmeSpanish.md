@@ -15,5 +15,6 @@ He realizado varias modificaciones:
  <li>Carga de ficheros pfiles</li>
  <li>No se requiere la libreria de bitluni completa. He reducido a lo mínimo, ahorrando RAM y FLASH, basado en la librería de Ricardo Massaro</li> 
  <li>Soporte modo Hi-res y pseudo hi-res</li> 
- <li>El OSD se saca con la tecla <b>F1</b></li> 
-</ul> 
+ <li>El OSD se saca con la tecla <b>F1</b></li>
+ <li>No están todas las teclas mapeadas</li> 
+</ul>
