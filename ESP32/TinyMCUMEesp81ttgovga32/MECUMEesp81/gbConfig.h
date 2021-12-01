@@ -1,6 +1,10 @@
 #ifndef _GB_CONFIG_H
  #define _GB_CONFIG_H
  
+ #define use_lib_tinybitluni_fast
+
+ //Video colors (8 colores es DAC 3 bits)
+ //#define use_lib_vga8colors 
 
  //Corrige teclados que no se inicializan(solucion dcrespo3D)
  //#define FIX_PERIBOARD_NOT_INITING

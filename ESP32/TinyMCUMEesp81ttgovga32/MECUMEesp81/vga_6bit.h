@@ -2,6 +2,9 @@
 #ifndef VGA_6BIT_H_FILE
 #define VGA_6BIT_H_FILE
 
+#include "gbConfig.h"
+#ifdef use_lib_tinybitluni_fast
+
 #include <cstdint>
 
 //JJ class VgaMode;
@@ -39,5 +42,7 @@ int vga_get_yres();
 
 unsigned char vga_get_vsync_inv_bit(void);
 unsigned char vga_get_hsync_inv_bit(void);
+
+#endif
 
 #endif //VGA_6BIT_H_FILE

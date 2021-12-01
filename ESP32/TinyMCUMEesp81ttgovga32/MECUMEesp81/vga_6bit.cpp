@@ -62,7 +62,9 @@
 // line on the screeb).
 //
 // =====================================================================
- 
+
+#include "gbConfig.h"
+#ifdef use_lib_tinybitluni_fast 
 
 #include <esp_heap_caps.h>
 #include <soc/rtc.h>
@@ -343,11 +345,16 @@ static void IRAM_ATTR i2s_isr(void *arg)
 static void setup_i2s_output(const unsigned char *pin_map)
 {
   periph_module_enable(PERIPH_I2S1_MODULE);
-  for (int i = 0; i < 8; i++) {
-    int pin = pin_map[i];
+  //for (int i = 0; i < 8; i++) 
+  for (unsigned char i = 0; i < 8; i++) 
+  {   
+   unsigned char pin = pin_map[i];
+   if (pin != 255)
+   {//Si es 255 se salta. DAC 8 colores
     PIN_FUNC_SELECT(GPIO_PIN_MUX_REG[pin], PIN_FUNC_GPIO);
     gpio_set_direction((gpio_num_t) pin, (gpio_mode_t) GPIO_MODE_DEF_OUTPUT);
     gpio_matrix_out(pin, I2S1O_DATA_OUT0_IDX + i, false, false);
+   }
   }
   periph_module_enable(PERIPH_I2S1_MODULE);
 
@@ -555,7 +562,7 @@ unsigned char **vga_get_framebuffer()
 }
 
 
-
+#endif
 
 
 

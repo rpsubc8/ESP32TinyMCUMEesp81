@@ -44,16 +44,31 @@
  //#define PIN_HSYNC      23
  //#define PIN_VSYNC      15
 
- static const unsigned char pin_config[] = {
-  PIN_RED_LOW,
-  PIN_RED_HIGH,
-  PIN_GREEN_LOW,
-  PIN_GREEN_HIGH,
-  PIN_BLUE_LOW,
-  PIN_BLUE_HIGH,
-  PIN_HSYNC,
-  PIN_VSYNC
- };
+ #ifdef use_lib_vga8colors
+  //DAC 3 bits 8 colores
+  // 3 bit pins  
+  static const unsigned char pin_config[] = {  
+   PIN_RED_HIGH,
+   PIN_GREEN_HIGH,  
+   PIN_BLUE_HIGH,
+   255,
+   255,
+   255,
+   PIN_HSYNC,
+   PIN_VSYNC
+  };
+ #else 
+  static const unsigned char pin_config[] = {
+   PIN_RED_LOW,
+   PIN_RED_HIGH,
+   PIN_GREEN_LOW,
+   PIN_GREEN_HIGH,
+   PIN_BLUE_LOW,
+   PIN_BLUE_HIGH,
+   PIN_HSYNC,
+   PIN_VSYNC
+  };
+ #endif 
 
 #endif
 
@@ -95,9 +110,9 @@ unsigned char XBuf[WIDTH*8];
 
 unsigned char gb_cpunoexe=0;
 int gb_cpunoexe_timer_ini;
-unsigned short int tiempo_ini_cpu,tiempo_fin_cpu;
-unsigned short int total_tiempo_ms_cpu;
-unsigned short int tiene_que_tardar;
+unsigned int tiempo_ini_cpu,tiempo_fin_cpu;
+unsigned int total_tiempo_ms_cpu;
+unsigned int tiene_que_tardar;
 
 unsigned int tiempo_ini_vga,tiempo_cur_vga;
 
@@ -161,10 +176,17 @@ void PreparaColorVGA(void);
 void PreparaColorVGA()
 {
  #ifdef use_lib_bitluni_fast
-  for (unsigned char i=0;i<8;i++)
-  {  
-   gb_color_vga[i] = gb_color_vga[i] | gb_sync_bits;  
-  } 
+  #ifdef use_lib_vga8colors
+   for (unsigned char i=0;i<8;i++)
+   {  
+    gb_color_vga[i] = (gb_color_vga[i] & 0x07) | gb_sync_bits;  
+   }  
+  #else
+   for (unsigned char i=0;i<8;i++)
+   {  
+    gb_color_vga[i] = gb_color_vga[i] | gb_sync_bits;  
+   }
+  #endif 
  #else	
   for (unsigned char i=0;i<8;i++)
   {  
