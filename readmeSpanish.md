@@ -19,6 +19,31 @@ He realizado varias modificaciones:
  <li>No están todas las teclas mapeadas</li> 
 </ul>
 
+
+<br>
+<h1>Requerimientos</h1>
+Se requiere:
+ <ul>
+  <li>TTGO VGA32 v1.x (1.0, 1.1, 1.2, 1.4)</li>
+  <li>Visual Studio 1.48.1 PLATFORMIO 2.2.1 Espressif32 v3.3.2</li>
+  <li>Arduino IDE 1.8.11</li>
+  <li>Librería reducida Arduino fabgl 0.9.0 (incluida en proyecto PLATFORMIO)</li>
+  <li>Librería reducida Arduino bitluni 0.3.3 (incluida en proyecto)</li>
+ </ul>
+<center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/ttgovga32v12.jpg'></center> 
+<br>
+ 
+ 
+<h1>PlatformIO</h1>
+Se debe instalar el PLATFORMIO 2.2.1 desde las extensiones del Visual Studio. Se requiere también Espressif32 v3.3.2.
+<center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewPlatformIOinstall.gif'></center>
+Luego se seleccionará el directorio de trabajo <b>TinyMCUMEesp81ttgovga32</b>.
+Debemos modificar el fichero <b>platformio.ini</b> la opción <b>upload_port</b> para seleccionar el puerto COM donde tenemos nuestra placa TTGO VGA32.
+<center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewPlatformIO.gif'></center>
+Luego procederemos a compilar y subir a la placa. No se usa particiones, así que debemos subir todo el binario compilado.
+Está todo preparado para no tener que instalar las librerias de bitluni ni fabgl.
+
+
 <br><br>
 <h1>Modo Hi-res</h1>
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewMetropolis.gif'></center>
