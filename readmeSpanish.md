@@ -10,7 +10,7 @@ He realizado varias modificaciones:
  <li>Creado proyecto compatible con Arduino IDE y Platform IO</li> 
  <li>Se puede usar cualquier pin digital para el video (hardware.h)</li> 
  <li>Menú de velocidad de video de emulación, VGA, teclado</li>
- <li>Soporte para modo 64 colores.</li>    
+ <li>Soporte para modo 64 colores (DAC 6 bits) y 8 colores (DAC 3 bits).</li>    
  <li>VGA 320x200</li>
  <li>Carga de ficheros pfiles</li>
  <li>No se requiere la libreria de bitluni completa. He reducido a lo mínimo, ahorrando RAM y FLASH, basado en la librería de Ricardo Massaro</li> 
