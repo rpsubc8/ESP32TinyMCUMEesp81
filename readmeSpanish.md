@@ -22,3 +22,22 @@ He realizado varias modificaciones:
 <br><br>
 <h1>Modo Hi-res</h1>
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewMetropolis.gif'></center>
+
+
+<br><br>
+<h1>Tool p2h</h1>
+He creado una herramienta muy básica, para convertir los archivos .p en .h en modo lista para ser procesados por el emulador. Tan sólo tenemos que dejar los archivos .p en la carpeta <b>input\pfile</b> y ejecutar el archivo <b>p2h.exe</b>, de forma que se generará una salida en el directorio <b>dataFlash</b>. Para pruebas, se ha dejado un archivo en el directorio <b>pfile</b>, que se recomienda borrar en caso de realizar una nueva lista personalizada. También se recomienda borrar los archivos del directorio <b>MECUMEesp81\dataFlash\pfile</b> para tener un proyecto limpio.<br><br>
+<a href='https://github.com/rpsubc8/ESP32MCUMEesp81/tree/main/tools/p2h'>Tool p2h</a>
+<br><br>
+<pre>
+ input/
+  pfile/ 
+ output/
+  dataFlash/
+   pfile/
+</pre>
+Posteriormente debemos copiar el directorio <b>dataFlash</b> en el proyecto <b>TinyMCUMEesp81ttgovga32\MECUMEesp81</b> sobreescribiendo la carpeta dataFlash previa. Se recomienda limpiar el proyecto y volver a compilar.<br>
+Esta herramienta es muy simple, y no controla los errores, por lo que se recomienda dejarle los archivos con nombres muy simples y lo más sencillo posible.<br>
+El proyecto en PLATFORM.IO está preparado para 2 MB de Flash. Si necesitamos los 4MB de flash, tendremos que modificar la entrada del archivo <b>platformio.ini</b>
+<pre>board_build.partitions = huge_app.csv</pre>
+En el Arduino IDE, debemos elegir la opción <b>Partition Scheme (Huge APP)</b>.
