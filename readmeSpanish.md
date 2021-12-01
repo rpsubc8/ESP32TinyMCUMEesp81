@@ -34,7 +34,7 @@ El archivo <b>gbConfig.h</b> se seleccionan las opciones:
  <li><b>gb_delay_emulate_ms:</b> Milisegundos de espera por cada frame completado.</li>
  <li><b>use_lib_delay_tick_cpu_auto:</b> Si está a 1, la CPU se autoajusta a 20 ms por frame.</li>
  <li><b>use_lib_delay_tick_cpu_milis:</b> Si use_lib_delay_tick_cpu_auto está a 0, lo que definamos aqui, será la espera en milisegundos por frame.</li>
- </li><b>FIX_PERIBOARD_NOT_INITING:</b> Solución realizada por <b>dcrespo3D</b> para la inicialización en algunos teclados.</li>
+ <li><b>FIX_PERIBOARD_NOT_INITING:</b> Solución realizada por <b>dcrespo3D</b> para la inicialización en algunos teclados.</li>
 </ul>
 
 <br><br>
