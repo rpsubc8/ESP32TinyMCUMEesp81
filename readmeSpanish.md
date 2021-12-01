@@ -24,6 +24,19 @@ He realizado varias modificaciones:
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewMetropolis.gif'></center>
 
 
+<br>
+<h1>Opciones</h1>
+El archivo <b>gbConfig.h</b> se seleccionan las opciones:
+<ul> 
+ <li><b>use_lib_vga8colors:</b> Obliga a usar RGB modo de 8 colores (3 pines). Saca 8 colores, frente a los 64 del modo normal (6 pines RRGGBB).</li>   
+ <li><b>use_lib_log_serial:</b> Se envian logs por puerto serie usb</li> 
+ <li><b>use_lib_keyboard_poll_milis:</b> Se debe especificar el número de milisegundos de polling para el teclado.</li> 
+ <li><b>gb_delay_emulate_ms:</b> Milisegundos de espera por cada frame completado.</li>
+ <li><b>use_lib_delay_tick_cpu_auto</b>Si está a 1, la CPU se autoajusta a 20 ms por frame.</li>
+ <li><b>use_lib_delay_tick_cpu_milis</b>Si use_lib_delay_tick_cpu_auto está a 0, lo que definamos aqui, será la espera en milisegundos por frame.</li>
+ </li><b>FIX_PERIBOARD_NOT_INITING</b> Solución realizada por <b>dcrespo3D</b> para la inicialización en algunos teclados.</li>
+</ul>
+
 <br><br>
 <h1>Tool p2h</h1>
 He creado una herramienta muy básica, para convertir los archivos .p en .h en modo lista para ser procesados por el emulador. Tan sólo tenemos que dejar los archivos .p en la carpeta <b>input\pfile</b> y ejecutar el archivo <b>p2h.exe</b>, de forma que se generará una salida en el directorio <b>dataFlash</b>. Para pruebas, se ha dejado un archivo en el directorio <b>pfile</b>, que se recomienda borrar en caso de realizar una nueva lista personalizada. También se recomienda borrar los archivos del directorio <b>MECUMEesp81\dataFlash\pfile</b> para tener un proyecto limpio.<br><br>
