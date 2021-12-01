@@ -63,7 +63,7 @@ El archivo <b>gbConfig.h</b> se seleccionan las opciones:
 </ul>
 
 <br><br>
-<h1>DIY circuito/h1>
+<h1>DIY circuito</h1>
 Si no queremos usar una placa TTGO VGA32 v1.x, podemos construirla siguiendo el esquema de <b>fabgl</b>:
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/fabglcircuit.gif'></center>
  
