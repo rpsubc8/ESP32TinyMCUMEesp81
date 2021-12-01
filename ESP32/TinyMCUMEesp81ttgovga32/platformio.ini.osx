@@ -10,13 +10,19 @@ board_build.mcu = esp32
 
 ; change MCU frequency
 board_build.f_cpu = 240000000L
+; set frequency to 40MHz
+board_build.f_flash = 40000000L
+; set frequency to 80MHz fast
+;board_build.f_flash = 80000000L
+; Custom FLASH Mode fast
+;board_build.flash_mode = qio
 
 upload_port = /dev/cu.SLAB_USBtoUART
 upload_protocol = esptool
 
 monitor_speed = 115200
-board_build.partitions = noota_3g.csv
-;board_build.partitions = huge_app.csv
+;board_build.partitions = noota_3g.csv
+board_build.partitions = huge_app.csv
 build_flags =
     -s -w -O2
 ;    -DBOARD_HAS_PSRAM
