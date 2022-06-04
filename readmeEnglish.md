@@ -79,7 +79,7 @@ If we don't want to use a TTGO VGA32 v1.x board, we can build it following the <
 
 <br><br>
 <h1>Tool p2h</h1>
-He creado una herramienta muy básica, para convertir los archivos .p en .h en modo lista para ser procesados por el emulador. We only have to put the .p files in the folder <b>input\pfile</b> and run the file
+I have created a very basic tool, to convert .p files to .h in ready mode to be processed by the emulator. We only have to put the .p files in the folder <b>input\pfile</b> and run the file
  <b>p2h.exe</b> file, so that an output will be generated in the <b>dataFlash</b> directory.
  For testing purposes, a file has been left in the <b>pfile</b> directory.
  a new customized list. It is also recommended to delete the files in the <b>MECUMEesp81\dataFlash\pfile</b> directory to have a clean project.<br><br>
