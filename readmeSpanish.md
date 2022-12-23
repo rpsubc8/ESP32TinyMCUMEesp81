@@ -90,8 +90,8 @@ El archivo <b>gbConfig.h</b> se seleccionan las opciones:
  <li><b>use_lib_cvbs_bitluni_not_backbuffer:</b> No usa el doble buffer en CVBS, ahorrando memoria. Puede ocasionar defectos visuales (flickering).</li>
  <li><b>use_lib_cvbs_pal:</b> Si está activo junto con use_lib_cvbs_bitluni, la salida de video será en norma PAL, sino NTSC.</li>
  <li><b>use_lib_cvbs_ttgo_vga32:</b> La placa TTGO VGA32 utiliza una salida de 5 voltios, en lugar de 3v. Por tanto se debe tener descomentada dicha línea si se usa la salida de TV, para poder reducir a 1 voltio la salida del DAC.</li>
- <li><b>use_lib_cvbs_ttgo_vga32_bright: </b> Si la salida del DAC en la TTG VGA32 de 5v, es muy bajo, si se activa esta opción se puede incrementar un poco el brillo. Usar con cuidado, dado que la norma CVBS es de 1 voltio.</li>
- <li><b>use_lib_invert_color_default_value: </b> Permite la inversión de color, es decir, blanco por negro. En el modo CVBS por defecto está invertido. Sus valores son 1 o 0.</li>
+ <li><b>use_lib_cvbs_ttgo_vga32_bright:</b> Si la salida del DAC en la TTGO VGA32 de 5v, es muy bajo, si se activa esta opción se puede incrementar un poco el brillo. Usar con cuidado, dado que la norma CVBS es de 1 voltio.</li>
+ <li><b>use_lib_invert_color_default_value:</b> Permite la inversión de color, es decir, blanco por negro. En el modo CVBS por defecto está invertido. Sus valores son 1 o 0.</li>
 </ul>
 
 <br><br>
