@@ -41,7 +41,7 @@ He realizado varias modificaciones:
 Se requiere:
  <ul>
   <li>TTGO VGA32 v1.x (1.0, 1.1, 1.2, 1.4)</li>
-  <li>Visual Studio 1.66.1 PLATFORMIO 2.4.3 Espressif32 v3.5.0 (python 3.6)</li>
+  <li>Visual Studio 1.66.1 PLATFORMIO 2.5.0 Espressif32 v3.5.0</li>
   <li>Arduino IDE 1.8.11 Espressif System 1.0.6</li>
   <li>Librería reducida Arduino fabgl 0.9.0 (incluida en proyecto PLATFORMIO)</li>
   <li>Librería reducida Arduino bitluni 0.3.3 (incluida en proyecto)</li>
@@ -51,10 +51,10 @@ Se requiere:
  
  
 <h1>PlatformIO</h1>
-Se debe instalar el PLATFORMIO 2.4.3 desde las extensiones del Visual Studio. Se requiere también Espressif32 v3.5.0 (python 3.6).
+Se debe instalar el PLATFORMIO 2.5.0 desde las extensiones del Visual Studio. Se requiere también Espressif32 v3.5.0. 
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewPlatformIOinstall.gif'></center>
 Luego se seleccionará el directorio de trabajo <b>TinyMCUMEesp81ttgovga32</b>.
-Debemos modificar el fichero <b>platformio.ini</b> la opción <b>upload_port</b> para seleccionar el puerto COM donde tenemos nuestra placa TTGO VGA32.
+Debemos modificar el fichero <b>platformio.ini</b> la opción <b>upload_port</b> para seleccionar el puerto COM donde tenemos nuestra placa TTGO VGA32, si por algun motivo no nos lo detecta.
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewPlatformIO.gif'></center>
 Luego procederemos a compilar y subir a la placa. No se usa particiones, así que debemos subir todo el binario compilado.
 Está todo preparado para no tener que instalar las librerias de bitluni ni fabgl.
@@ -89,7 +89,7 @@ El archivo <b>gbConfig.h</b> se seleccionan las opciones:
  <li><b>use_lib_cvbs_bitluni:</b> Si está activo, no usa código de VGA, ni genera salida VGA. Usa la librería modifica de CVBS Bitluni. Si está comentado, usa todo el código de VGA. En la paca TTGO VGA32 se está usando el pin 26, es decir, el CLK del conector PS/2 del ratón.</li>
  <li><b>use_lib_cvbs_bitluni_not_backbuffer:</b> No usa el doble buffer en CVBS, ahorrando memoria. Puede ocasionar defectos visuales (flickering).</li>
  <li><b>use_lib_cvbs_pal:</b> Si está activo junto con use_lib_cvbs_bitluni, la salida de video será en norma PAL, sino NTSC.</li>
- <li><b>use_lib_cvbs_ttgo_vga32:</b> La placa TTG VGA32 utiliza una salida de 5 voltios, en lugar de 3v. Por tanto se debe tener descomentada dicha línea si se usa la salida de TV, para poder reducir a 1 voltio la salida del DAC.</li>
+ <li><b>use_lib_cvbs_ttgo_vga32:</b> La placa TTGO VGA32 utiliza una salida de 5 voltios, en lugar de 3v. Por tanto se debe tener descomentada dicha línea si se usa la salida de TV, para poder reducir a 1 voltio la salida del DAC.</li>
  <li><b>use_lib_cvbs_ttgo_vga32_bright: </b> Si la salida del DAC en la TTG VGA32 de 5v, es muy bajo, si se activa esta opción se puede incrementar un poco el brillo. Usar con cuidado, dado que la norma CVBS es de 1 voltio.</li>
  <li><b>use_lib_invert_color_default_value: </b> Permite la inversión de color, es decir, blanco por negro. En el modo CVBS por defecto está invertido. Sus valores son 1 o 0.</li>
 </ul>
