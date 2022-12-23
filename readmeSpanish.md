@@ -15,8 +15,8 @@ He realizado varias modificaciones:
  <li>Carga de ficheros pfiles</li>
  <li>No se requiere la libreria de bitluni completa. He reducido a lo mínimo, ahorrando RAM y FLASH, basado en la librería de Ricardo Massaro</li> 
  <li>Soporte modo Hi-res y pseudo hi-res</li> 
+ <li>Soporte CVBS PAL NTSC Blanco y Negro en placa TTGO VGA32 (pin 26 CLK PS/2)</li>
  <li>El OSD se saca con la tecla <b>F1</b></li>
- <li>No están todas las teclas mapeadas</li> 
 </ul>
 
 
@@ -25,8 +25,8 @@ He realizado varias modificaciones:
 Se requiere:
  <ul>
   <li>TTGO VGA32 v1.x (1.0, 1.1, 1.2, 1.4)</li>
-  <li>Visual Studio 1.48.1 PLATFORMIO 2.2.1 Espressif32 v3.3.2</li>
-  <li>Arduino IDE 1.8.11</li>
+  <li>Visual Studio 1.66.1 PLATFORMIO 2.4.3 Espressif32 v3.5.0 (python 3.6)</li>
+  <li>Arduino IDE 1.8.11 Espressif System 1.0.6</li>
   <li>Librería reducida Arduino fabgl 0.9.0 (incluida en proyecto PLATFORMIO)</li>
   <li>Librería reducida Arduino bitluni 0.3.3 (incluida en proyecto)</li>
  </ul>
@@ -35,7 +35,7 @@ Se requiere:
  
  
 <h1>PlatformIO</h1>
-Se debe instalar el PLATFORMIO 2.2.1 desde las extensiones del Visual Studio. Se requiere también Espressif32 v3.3.2.
+Se debe instalar el PLATFORMIO 2.4.3 desde las extensiones del Visual Studio. Se requiere también Espressif32 v3.5.0 (python 3.6).
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewPlatformIOinstall.gif'></center>
 Luego se seleccionará el directorio de trabajo <b>TinyMCUMEesp81ttgovga32</b>.
 Debemos modificar el fichero <b>platformio.ini</b> la opción <b>upload_port</b> para seleccionar el puerto COM donde tenemos nuestra placa TTGO VGA32.
