@@ -1,7 +1,7 @@
 #ifndef _GB_PFILE_H
  #define _GB_PFILE_H
 
- #include <stddef.h>
+ //#include <stddef.h>
  #include "pfile/zxgal.h"
  #include "pfile/frog.h"
  #include "pfile/3dmaze.h"
@@ -31,8 +31,9 @@
  #include "pfile/antattack.h"
  #include "pfile/onelittleghost.h"
  #include "pfile/krazykonginter.h" 
+ #include "pfile/readkybd1k.h" 
  
- #define max_list_pfile 29
+ #define max_list_pfile 30
  
  //tapes
  //Titulos
@@ -65,7 +66,8 @@
   "gulp2",
   "antattack",
   "onelittleghost",
-  "krazykonginter"
+  "krazykonginter",
+  "readkybd1k"
  };
  
  //Tamanio en bytes
@@ -98,11 +100,12 @@
   6116,
   16167,
   15884,
-  7563
+  7563,
+  801
  };
  
  //Datos
- static const unsigned char * gb_list_pfile_data[max_list_pfile]={
+ static const unsigned char * gb_list_pfile_data[max_list_pfile]={ 
   zx_pfile_zxprog,
   zx_pfile_frog,
   zx_pfile_3dmaze,
@@ -131,7 +134,8 @@
   zx_pfile_gulp2,
   zx_pfile_antattack,
   zx_pfile_onelittleghost,
-  zx_pfile_KrazyKongInter
+  zx_pfile_KrazyKongInter,
+  zx_pfile_readkybd1k
  };
 
 
