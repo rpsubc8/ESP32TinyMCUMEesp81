@@ -16,7 +16,23 @@ He realizado varias modificaciones:
  <li>No se requiere la libreria de bitluni completa. He reducido a lo mínimo, ahorrando RAM y FLASH, basado en la librería de Ricardo Massaro</li> 
  <li>Soporte modo Hi-res y pseudo hi-res</li> 
  <li>Soporte CVBS PAL NTSC Blanco y Negro en placa TTGO VGA32 (pin 26 CLK PS/2)</li>
- <li>El OSD se saca con la tecla <b>F1</b></li>
+ <li>El modo CVBS por defecto no tiene borde y sale en modo invertido de color, para que se puede ver en el mayor número de TV sin problemas.</li>
+ <li>El OSD se muestra con la tecla <b>F1</b></li>
+ <li>
+   Teclado mapeado
+   <pre>
+ //Keyboard Matrix
+ // Port____Line____Bit__0____1____2____3____4__
+ // FEFEh  0  (A8)     SHIFT  Z    X    C    V
+ // FDFEh  1  (A9)       A    S    D    F    G
+ // FBFEh  2  (A10)      Q    W    E    R    T
+ // F7FEh  3  (A11)      1    2    3    4    5
+ // EFFEh  4  (A12)      0    9    8    7    6
+ // DFFEh  5  (A13)      P    O    I    U    Y
+ // BFFEh  6  (A14)    ENTER  L    K    J    H
+ // 7FFEh  7  (A15)     SPC   .    M    N    B 
+   </pre>
+ </li>
 </ul>
 
 
@@ -70,12 +86,60 @@ El archivo <b>gbConfig.h</b> se seleccionan las opciones:
  <li><b>use_lib_delay_tick_cpu_auto:</b> Si está a 1, la CPU se autoajusta a 20 ms por frame.</li>
  <li><b>use_lib_delay_tick_cpu_milis:</b> Si use_lib_delay_tick_cpu_auto está a 0, lo que definamos aqui, será la espera en milisegundos por frame.</li>
  <li><b>FIX_PERIBOARD_NOT_INITING:</b> Solución realizada por <b>dcrespo3D</b> para la inicialización en algunos teclados.</li>
+ <li><b>use_lib_cvbs_bitluni:</b> Si está activo, no usa código de VGA, ni genera salida VGA. Usa la librería modifica de CVBS Bitluni. Si está comentado, usa todo el código de VGA. En la paca TTGO VGA32 se está usando el pin 26, es decir, el CLK del conector PS/2 del ratón.</li>
+ <li><b>use_lib_cvbs_bitluni_not_backbuffer:</b> No usa el doble buffer en CVBS, ahorrando memoria. Puede ocasionar defectos visuales (flickering).</li>
+ <li><b>use_lib_cvbs_pal:</b> Si está activo junto con use_lib_cvbs_bitluni, la salida de video será en norma PAL, sino NTSC.</li>
+ <li><b>use_lib_cvbs_ttgo_vga32:</b> La placa TTG VGA32 utiliza una salida de 5 voltios, en lugar de 3v. Por tanto se debe tener descomentada dicha línea si se usa la salida de TV, para poder reducir a 1 voltio la salida del DAC.</li>
+ <li><b>use_lib_cvbs_ttgo_vga32_bright: </b> Si la salida del DAC en la TTG VGA32 de 5v, es muy bajo, si se activa esta opción se puede incrementar un poco el brillo. Usar con cuidado, dado que la norma CVBS es de 1 voltio.</li>
+ <li><b>use_lib_invert_color_default_value: </b> Permite la inversión de color, es decir, blanco por negro. En el modo CVBS por defecto está invertido. Sus valores son 1 o 0.</li>
 </ul>
 
 <br><br>
 <h1>DIY circuito</h1>
 Si no queremos usar una placa TTGO VGA32 v1.x, podemos construirla siguiendo el esquema de <b>fabgl</b>:
-<center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/fabglcircuit.gif'></center>
+<center><img src='preview/fabglcircuit.gif'></center>
+Para el caso de querer salida de video cvbs, en lugar de VGA, debemos de sacar un cable directo del pin 26 del conector PS/2 del ratón, activando la opción <b>use_lib_cvbs_pal</b>, así como <b>use_lib_cvbs_ttgo_vga32</b> del <b>gbConfig.h</b>. Si no activamos dicha opción, la salida será de más de 1 voltio, teniendo que ser reducida con un reductor de voltaje (potenciómetro).
+<center><img src='preview/ps2.gif'></center>
+El conector de PS/2 es visto desde el propio jack de la placa, es decir, jack hembra. El pin en PS/2 es el CLK, es decir, el 5.
+<center><img src='preview/ttgops2cvbs.gif'></center>
+En esta imagen se puede ver el mosfet SOT23 interno de la placa TTGO VGA32, de manera, que la salida en CLK (pin 5) es 5 voltios.
+ 
+ 
+ 
+<br><br>
+<h1>Test DAC cvbs</h1>
+Para TTGO VGA32 como la salida es 5v, o hacemos reducción de voltaje o podemos reducir la escala del DAC. En 3.3v de salida, con máximo el valor de 77, ya nos daría 0.99v, que sería 1v. Si tenemos 5v de salida, con 50, ya tenemos 0.97v, que sería 1v. De esta forma, ya no necesitamos resistencias reductoras, es el cable directo. Mientras no nos pasemos de 77 en 3.3v o 50 en 5v, no tendremos problema, sobre todo si sólo necesitamos 2 colores (blanco y negro).
+Podemos hacer pruebas con un multímetro, sobre todo en la TTGO VGA32 v1.x:
+<pre>
+//ESP32 Pin 26
+//DAC - Voltaje
+//  0 - 0.06
+// 38 - 0.52
+// 77 - 1
+//255 - 3.17
+
+#include <Arduino.h>
+#include <driver/dac.h>
+
+const int arrayValue[4]={0,38,77,255};
+unsigned char cont=0;
+
+void setup() {
+ Serial.begin(115200);
+ dac_output_enable(DAC_CHANNEL_2);
+}
+
+void loop() {
+ dac_output_voltage(DAC_CHANNEL_2, arrayValue[cont]);
+ Serial.printf("%d\n",arrayValue[cont]);
+ delay(4000);
+ cont++;
+ cont &= 0x03;
+}
+</pre>
+Los valores máximos al escribir en el buffer de video en una placa ESP32 es de 54, mientras que para TTGO VGA32 v1.x sería de 35.
+ 
+ 
  
 
 <br><br>
