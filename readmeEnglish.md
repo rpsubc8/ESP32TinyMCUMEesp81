@@ -15,8 +15,24 @@ I have made several modifications:
   <li>Uploading of pfiles.</li>
   <li>The complete bitluni library is not required. I have reduced to the minimum, saving RAM and FLASH, based on Ricardo Massaro's library.</li>
   <li>Hi-res and pseudo hi-res mode support.</li>
+  <li>Support CVBS PAL NTSC Black and White on TTGO VGA32 board (pin 26 CLK PS/2)</li>
+  <li>The default CVBS mode has no border and comes out in inverted color mode, so that it can be viewed on the largest number of TVs without problems.</li>
   <li>The OSD is brought up with the <b>F1</b> key.</li>
-  <li>Not all keys are mapped.</li>
+  <li>
+   keyboard mapped
+   <pre>
+    //Keyboard Matrix
+ // Port____Line____Bit__0____1____2____3____4__
+ // FEFEh  0  (A8)     SHIFT  Z    X    C    V
+ // FDFEh  1  (A9)       A    S    D    F    G
+ // FBFEh  2  (A10)      Q    W    E    R    T
+ // F7FEh  3  (A11)      1    2    3    4    5
+ // EFFEh  4  (A12)      0    9    8    7    6
+ // DFFEh  5  (A13)      P    O    I    U    Y
+ // BFFEh  6  (A14)    ENTER  L    K    J    H
+ // 7FFEh  7  (A15)     SPC   .    M    N    B 
+   </pre>
+  </li>
  </ul>
  
  
@@ -25,7 +41,7 @@ I have made several modifications:
 Required:
  <ul>
   <li>TTGO VGA32 v1.x (1.0, 1.1, 1.2, 1.4)</li>
-  <li>Visual Studio 1.48.1 PLATFORMIO 2.2.1 Espressif32 v3.3.2</li>
+  <li>Visual Studio 1.66.1 PLATFORMIO 2.5.0 Espressif32 v3.5.0</li>
   <li>Arduino IDE 1.8.11</li>
   <li>Arduino fabgl 0.9.0 reduced library (included in PLATFORMIO project)</li>
   <li>Arduino bitluni 0.3.3 reduced library (included in project)</li>
@@ -34,10 +50,10 @@ Required:
 <br>
 
 <h1>PlatformIO</h1>
-PLATFORMIO 2.2.1 must be installed from the Visual Studio extensions. Espressif32 v3.3.2 is also required.
+PLATFORMIO 2.5.0 must be installed from the Visual Studio extensions. Espressif32 v3.5.0 is also required.
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewPlatformIOinstall.gif'></center>
 Then the working directory <b>TinyMCUMEesp81ttgovga32</b> will be selected.
-We must modify the <b>platformio.ini</b> file the <b>upload_port</b> option to select the COM port where we have our TTGO VGA32 board.
+We must modify the <b>platformio.ini</b> file the <b>upload_port</b> option to select the COM port where we have our TTGO VGA32 board, if for some reason it is not detected by us.
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewPlatformIO.gif'></center>
 Then we will proceed to compile and upload to the board. No partitions are used, so we must upload the entire compiled binary.
 It is all set up so you don't have to install the bitluni and fabgl libraries.
@@ -67,7 +83,13 @@ The <b>gbConfig.h</b> file options are selected:
   <li><b>gb_delay_emulate_ms:</b> Milliseconds of waiting for each completed frame.</li>
   <li><b>use_lib_delay_tick_cpu_auto:</b> If set to 1, the CPU autotunes itself to 20 ms per frame.</li>
   <li><b>use_lib_delay_tick_cpu_milis:</b> If use_lib_delay_tick_cpu_auto is set to 0, whatever we define here will be the wait in milliseconds per frame.</li>
-  <li><b>FIX_PERIBOARD_NOT_INITING:</b> Solution made by <b>dcrespo3D</b> for initialization on some keyboards.</li>
+  <li><b>FIX_PERIBOARD_NOT_INITING:</b> Solution made by <b>dcrespo3D</b> for initialization on some keyboards.</li>  
+ <li><b>use_lib_cvbs_bitluni:</b> If it is active, it does not use VGA code, nor does it generate VGA output. Use the modified CVBS Bitluni library. If it is commented out, use all the VGA code. In the TTGO VGA32 package, pin 26 is being used, that is, the CLK of the PS/2 connector of the mouse.</li>
+ <li><b>use_lib_cvbs_bitluni_not_backbuffer:</b> Does not use double buffering in CVBS, saving memory. May cause visual defects (flickering).</li> 
+ <li><b>use_lib_cvbs_pal:</b> If it is activated together with use_lib_cvbs_bitluni, the video output will be in PAL standard, if not NTSC.</li>
+ <li><b>use_lib_cvbs_ttgo_vga32:</b> The TTGO VGA32 board uses a 5 volt output, instead of 3v. Therefore, said line must be uncommented if the TV output is used, in order to reduce the DAC output to 1 volt.</li>
+ <li><b>use_lib_cvbs_ttgo_vga32_bright:</b> If the DAC output on the 5v TTGO VGA32 is very low, activating this option can increase the brightness a bit. Use with care, as the CVBS standard is 1 volt.</li>
+ <li><b>use_lib_invert_color_default_value:</b> It allows color inversion, that is, white for black. In CVBS mode, it is inverted by default. Its values are 1 or 0.</li>
  </ul> 
 
 
@@ -75,6 +97,46 @@ The <b>gbConfig.h</b> file options are selected:
 <h1>DIY circuit</h1>
 If we don't want to use a TTGO VGA32 v1.x board, we can build it following the <b>fabgl</b> schematic:
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/fabglcircuit.gif'></center>
+In the case of wanting cvbs video output, instead of VGA, we must take a direct cable from pin 26 of the PS/2 connector of the mouse, activating the option <b>use_lib_cvbs_pal</b>, as well as <b>use_lib_cvbs_ttgo_vga32 </b> of the <b>gbConfig.h</b>. If we do not activate this option, the output will be more than 1 volt, having to be reduced with a voltage reducer (potentiometer).
+<center><img src='preview/ps2.gif'></center>
+The PS/2 connector is seen from the board's own jack, that is, the female jack. The pin on PS/2 is CLK, that is, 5.
+<center><img src='preview/ttgops2cvbs.gif'></center>
+In this image you can see the internal SOT23 mosfet of the TTGO VGA32 board, so that the output at CLK (pin 5) is 5 volts.
+ 
+
+
+<br><br>
+<h1>Test DAC cvbs</h1>
+For TTGO VGA32 as the output is 5v, either we do voltage reduction or we can reduce the scale of the DAC. At 3.3v output, with a maximum value of 77, it would already give us 0.99v, which would be 1v. If we have 5v output, with 50, we already have 0.97v, which would be 1v. In this way, we no longer need step-down resistors, it is the direct wire. As long as we don't go over 77 in 3.3v or 50 in 5v, we won't have a problem, especially if we only need 2 colors (black and white).
+We can do tests with a multimeter, especially on the TTGO VGA32 v1.x:
+<pre>
+//ESP32 Pin 26
+//DAC - Voltaje
+//  0 - 0.06
+// 38 - 0.52
+// 77 - 1
+//255 - 3.17
+
+#include <Arduino.h>
+#include <driver/dac.h>
+
+const int arrayValue[4]={0,38,77,255};
+unsigned char cont=0;
+
+void setup() {
+ Serial.begin(115200);
+ dac_output_enable(DAC_CHANNEL_2);
+}
+
+void loop() {
+ dac_output_voltage(DAC_CHANNEL_2, arrayValue[cont]);
+ Serial.printf("%d\n",arrayValue[cont]);
+ delay(4000);
+ cont++;
+ cont &= 0x03;
+}
+</pre>
+The maximum values when writing to the video buffer on an ESP32 board is 54, while for TTGO VGA32 v1.x it would be 35.
 
 
 <br><br>
