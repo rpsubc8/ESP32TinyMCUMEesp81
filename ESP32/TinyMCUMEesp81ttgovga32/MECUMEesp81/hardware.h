@@ -44,9 +44,18 @@
  #define WHITE   0x0F      // 0000 1111
 
  
- //Colores Indices en Fairchild
- #define ID_COLOR_BLACK 0 //Negro
- #define ID_COLOR_WHITE 1 //Blanco
- #define ID_COLOR_VIOLETA 2 //Violeta
+ //Colores Indices Zx81
+ //#define ID_COLOR_BLACK 0 //Negro
+ //#define ID_COLOR_WHITE 1 //Blanco
+ //#define ID_COLOR_VIOLETA 2 //Violeta
+ #ifdef use_lib_cvbs_bitluni
+  #define ID_COLOR_BLACK 0 //Negro
+  #define ID_COLOR_WHITE 7 //Blanco
+  #define ID_COLOR_VIOLETA 0 //Violeta 
+ #else
+  #define ID_COLOR_BLACK 0 //Negro
+  #define ID_COLOR_WHITE 7 //Blanco
+  #define ID_COLOR_VIOLETA 0 //Violeta
+ #endif
  
 #endif

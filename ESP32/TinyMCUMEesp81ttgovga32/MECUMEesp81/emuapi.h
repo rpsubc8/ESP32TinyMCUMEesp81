@@ -1,6 +1,7 @@
 #ifndef EMUAPI_H
  #define EMUAPI_H
 
+#include "gbConfig.h"
 #include "zx81.h"
 
 //JJ #define INVX        1
@@ -132,6 +133,13 @@ extern void emu_DrawVsync(void);
 //JJextern int emu_FrameSkip(void);
 //JJ extern void * emu_LineBuffer(int line);
 
+#ifdef use_lib_optimice_width_height
+ //void IRAM_ATTR jj_direct_writeLine(unsigned char y, unsigned char *buf); 
+ void jj_direct_writeLine(unsigned char y, unsigned char *buf); 
+#else
+ //void IRAM_ATTR jj_direct_writeLine(int width, int height, int y, unsigned char *buf);
+ void jj_direct_writeLine(int width, int height, int y, unsigned char *buf);
+#endif
 void jj_fast_putpixel(short int x,short int y,unsigned char c);
 void emu_Init_Flash(unsigned char id);
 

@@ -1,8 +1,8 @@
 #include "gbConfig.h"
 #include "gbGlobals.h"
-#ifndef use_lib_bitluni_fast
- #include "MartianVGA.h"
-#endif 
+//#ifndef use_lib_bitluni_fast
+// #include "MartianVGA.h"
+//#endif 
 #include "MECUMEesp81.h"
 #include "hardware.h"
 #include "keys.h"

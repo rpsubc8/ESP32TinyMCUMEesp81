@@ -1140,7 +1140,7 @@ int emu_LoadFileSeek(char * filename, char * buf, int size, int seek)
 
 
 //JJ static unsigned short palette16[PALETTE_SIZE];
-static int fskip=0;
+unsigned char fskip=0;
 
 //JJ void emu_SetPaletteEntry(unsigned char r, unsigned char g, unsigned char b, int index)
 //JJ{
@@ -1170,7 +1170,14 @@ void jj_fast_putpixel(short int x,short int y,unsigned char c)
  // //fflush(stdout);
  // return;
  //}
- gb_buffer_vga[y][x^2]= gb_color_vga[c];
+ #ifdef use_lib_tinybitluni_fast
+  gb_buffer_vga[y][x^2]= gb_color_vga[c];
+ #else
+  #ifdef use_lib_cvbs_bitluni
+   //gb_buffer_cvbs[y][x]= gb_color_cvbs[(c==0)?0:7];
+   gb_buffer_cvbs[y][x]= gb_color_cvbs[(c & 0x01)];
+  #endif
+ #endif 
  
  //Uint8* p = (Uint8*)screen->pixels + (y * screen->pitch) + x;
  //*p= c;
@@ -1216,11 +1223,189 @@ short int fb_height = 200;
 //}
 
 
+#ifdef use_lib_optimice_width_height
+ //void IRAM_ATTR jj_direct_writeLine(unsigned char y, unsigned char *buf)
+ void jj_direct_writeLine(unsigned char y, unsigned char *buf)
+ {
+  int auxY,auxX;
+  unsigned char aColor;
+  unsigned int a0,a1,a2,a3,a32;
+  
+  //if ( (HEIGHT<fb_height) && (HEIGHT > 2) )
+  //{
+  // //y += (fb_height-HEIGHT)/2;
+  // y += (fb_height-HEIGHT)>>1; //DIV 2
+  //}
+  auxY= y;
+  auxX= 0;
+  
+  //if (WIDTH <= fb_width) 
+  //{
+  // //dst += (fb_width-width)/2;
+  // //auxX += (fb_width-WIDTH)/2;
+  // auxX += (fb_width-WIDTH)>>1; //DIV 2
+  //}
+
+  #ifdef use_lib_cvbs_bitluni   
+   #ifdef use_lib_cvbs_bitluni_border    
+    //Con borde
+    buf= buf+8; //Me salto columna 0, 8 pixels
+    for (unsigned char i=0;i<80;i++)
+    {//40 columnas 40x8=320
+     aColor= *buf++;
+     if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }     
+     a0= gb_color_cvbs[(aColor & 0x01)];
+     aColor= *buf++;
+     if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }     
+     a1= gb_color_cvbs[(aColor & 0x01)];
+     aColor= *buf++;
+     if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }     
+     a2= gb_color_cvbs[(aColor & 0x01)];
+     aColor= *buf++;
+     if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }     
+     a3= gb_color_cvbs[(aColor & 0x01)];
+
+     a32= a0 | a1<<8 | a2<<16 | a3<<24;
+     gb_buffer_cvbs32[auxY][auxX]= a32;
+     auxX++;     
+    }
+   #else
+    //Sin borde
+    buf= buf+40; //4x8=32 sumo 1 5x8=40
+   
+    //while (auxX<32)
+    while (auxX<8)
+    {
+     //gb_buffer_cvbs[auxY][auxX]= 0;
+     gb_buffer_cvbs32[auxY][auxX]= 0;
+     auxX++;
+    }
+
+    //for (int i=0;i<32;i++)
+    //{
+    // gb_buffer_cvbs[auxY][auxX]= 0;
+    // auxX++;
+    // *buf++;
+    //}
+
+    //for (int i=0;i<256;i++)
+    for (unsigned char i=0;i<64;i++)
+    {//32x8=256
+     aColor= *buf++;
+     //if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }
+     //aColor= gb_color_cvbs[((aColor==0)?0:7)];
+     //gb_buffer_cvbs[auxY][auxX]= aColor;
+
+     if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }
+     //a0= gb_color_cvbs[((aColor==0)?0:7)];
+     a0= gb_color_cvbs[(aColor & 0x01)];
+     aColor= *buf++;
+     if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }
+     //a1= gb_color_cvbs[((aColor==0)?0:7)];
+     a1= gb_color_cvbs[(aColor & 0x01)];
+     aColor= *buf++;
+     if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }
+     //a2= gb_color_cvbs[((aColor==0)?0:7)];
+     a2= gb_color_cvbs[(aColor & 0x01)];
+     aColor= *buf++;
+     if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }
+     //a3= gb_color_cvbs[((aColor==0)?0:7)];
+     a3= gb_color_cvbs[(aColor & 0x01)];
+
+     a32= a0 | a1<<8 | a2<<16 | a3<<24;
+     gb_buffer_cvbs32[auxY][auxX]= a32;
+     auxX++;
+    }
+
+    //while (auxX<320)
+    while (auxX<80)
+    {
+     //gb_buffer_cvbs[auxY][auxX]= 0;
+     gb_buffer_cvbs32[auxY][auxX]= 0;
+     auxX++;
+    }
+   #endif
+
+   //for (int i=240;i<320;i++)
+   //{
+   // gb_buffer_cvbs[auxY][auxX]= 0;
+   // auxX++;
+   // *buf++;
+   //}   
+
+   //for (int i=0; i<WIDTH; i++)
+   /*
+   for (unsigned char i=0; i<80; i++)
+   {//80 x 4 = 320       
+    if ((i<4)||(i>73))
+    {
+     a32= 0;
+     *buf+=4;
+    }
+    else
+    {
+    aColor= *buf++;  
+    if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }     
+    a0= gb_color_cvbs[((aColor==0)?0:7)];
+    aColor= *buf++;
+    if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }
+    a1= gb_color_cvbs[((aColor==0)?0:7)];
+    aColor= *buf++;
+    if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }
+    a2= gb_color_cvbs[((aColor==0)?0:7)];
+    aColor= *buf++;
+    if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }
+    a3= gb_color_cvbs[((aColor==0)?0:7)];    
+    a32= a0 | (a1<<8) | (a2<<16) | (a3<<24);
+    }
+                        
+    gb_buffer_cvbs32[auxY][auxX]= a32;
+    auxX++;    
+   }    
+   */      
+  #else
+   buf = buf+8; //Quitamos posicion 0 (8 pixels)
+   for (unsigned char i=0; i<80; i++)
+   {//80 x 4 = 320   
+    //*dst++=*buf++;   
+    aColor= *buf++;
+    if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }   
+    //jj_fast_putpixel(auxX,auxY,(aColor==0)?0:7);
+    //gb_buffer_vga[auxY][auxX^2]= gb_color_vga[((aColor==0)?0:7)];
+ 
+    //a0= gb_color_vga[((aColor==0)?0:7)];
+    a0= gb_color_vga[(aColor & 0x01)];
+    aColor= *buf++;
+    if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }
+    //a1= gb_color_vga[((aColor==0)?0:7)];
+    a1= gb_color_vga[(aColor & 0x01)];
+    aColor= *buf++;
+    if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }
+    //a2= gb_color_vga[((aColor==0)?0:7)];
+    a2= gb_color_vga[(aColor & 0x01)];
+    aColor= *buf++;
+    if (gb_invert_color == 1){ aColor=  ((~aColor)&0x01); }
+    //a3= gb_color_vga[((aColor==0)?0:7)];
+    a3= gb_color_vga[(aColor & 0x01)];
+                     
+    a32= a2 | (a3<<8) | (a0<<16) | (a1<<24);
+    gb_buffer_vga32[auxY][auxX]= a32;
+
+    auxX++;    
+   }        
+  #endif     
+ }
+#else
 //*******************************************************************
-void jj_direct_writeLine(int width, int height, int y, unsigned char *buf) {
+void IRAM_ATTR jj_direct_writeLine(int width, int height, int y, unsigned char *buf) 
+{
   int auxY,auxX;
   unsigned char aColor;     
-  if ( (height<fb_height) && (height > 2) ) y += (fb_height-height)/2;
+  if ( (height<fb_height) && (height > 2) )
+  {
+   //y += (fb_height-height)/2;
+   y += (fb_height-height)>>1; //DIV 2
+  }
   //uint8_t * dst=&framebuffer[y*fb_stride];
   auxY= y;
   auxX= 0;
@@ -1266,7 +1451,8 @@ void jj_direct_writeLine(int width, int height, int y, unsigned char *buf) {
     if (width <= fb_width) 
     {
       //dst += (fb_width-width)/2;
-      auxX += (fb_width-width)/2;
+      //auxX += (fb_width-width)/2;
+      auxX += (fb_width-width)>>1;
     }
     for (int i=0; i<width; i++)
     {
@@ -1281,8 +1467,10 @@ void jj_direct_writeLine(int width, int height, int y, unsigned char *buf) {
     }
   }
 }
+#endif
 
-
+#ifdef use_lib_optimice_width_height
+#else
 //*************************************************************************
 void emu_DrawLine(unsigned char * VBuf, int width, int height, int line) 
 {
@@ -1297,6 +1485,7 @@ void emu_DrawLine(unsigned char * VBuf, int width, int height, int line)
   jj_direct_writeLine(width,height,line,VBuf);
  }
 }  
+#endif
 
 //JJ void emu_DrawScreen(unsigned char * VBuf, int width, int height, int stride) 
 //JJ {  

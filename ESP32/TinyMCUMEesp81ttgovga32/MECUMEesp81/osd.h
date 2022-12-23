@@ -5,7 +5,7 @@
  void do_tinyOSD(void);
  //void SDLAssignSDLSurfaceOSD(SDL_Surface *surface,SDL_Event * ptrEvent);
  void SDLActivarOSDMainMenu();
- void SDLOSDClear(void);
+ //void SDLOSDClear(void);
  //SDL_Surface * SDLOSDGetSurface();
  void SDLEsperaTeclado(void);
  void SDLClear(void);

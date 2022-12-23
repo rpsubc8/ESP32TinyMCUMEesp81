@@ -1,12 +1,12 @@
 #include "Arduino.h"
 #include "gbConfig.h"
 #include "gbGlobals.h"
-#include "Z80.h"
+#include "z80.h"
 #include "zx81.h"
 //JJ #include "zx80rom.h"
 //JJ #include "zx81rom.h"
 #include "dataFlash/gbrom.h"
-#include "dataFlash/gbpfile.h"
+//#include "dataFlash/gbpfile.h"
 #include "emuapi.h"
 //JJ #include "common.h"
 //JJ #include "AY8910.h"
@@ -58,8 +58,8 @@ const unsigned char map_qw[8][5] = {
 static char tapename[64]={0};
 static const int kBuf[]={13,25,19,25,19,40}; //,21,40}; // LOAD "" (J shift p shift p, R ENTER) 
 static const int tBuf[]={2,0,2,0,2,2};//200!,2,2};
-static int kcount=0;
-static int timeout=100;
+//static int kcount=0; //No se usa
+//static int timeout=100; //No se usa
 
 
 
@@ -239,10 +239,18 @@ void do_interrupt()
 void bitbufBlit(unsigned char * buf)
 {
  unsigned int auxTime;
+
+ #ifdef use_lib_optimice_width_height     
+  if (fskip==0)
+  {
+   return;
+  }
+ #endif
+
  //gb_time_blit_cur= SDL_GetTicks();
  gb_time_blit_cur= millis();
  auxTime= (gb_time_blit_cur-gb_time_blit_before);
- if (auxTime < gb_blit_cur_poll_ms)
+ if (auxTime < (unsigned int)gb_blit_cur_poll_ms)
  {  
   return;
  }
@@ -253,15 +261,19 @@ void bitbufBlit(unsigned char * buf)
   //fflush(stdout);
  }
   
-  memset( XBuf, 1, WIDTH*8 ); 
-  buf = buf + (ZX_VID_MARGIN*(ZX_VID_FULLWIDTH/8));
+  //memset( XBuf, 1, WIDTH*8 ); 
+  //memset( XBuf, 1, WIDTH<<3 ); //x 8
+  memset( XBuf, 1, sizeof(XBuf) ); //x 8
+  //buf = buf + (ZX_VID_MARGIN*(ZX_VID_FULLWIDTH/8)); 
+  buf = buf + (ZX_VID_MARGIN*(ZX_VID_FULLWIDTH>>3)); //DIV 8
   int y,x,i;
   byte d;
   for(y=0;y<192;y++)
   {
-    byte * src = buf + 4;
-    for(x=0;x<32;x++)
-    {
+    byte * src = buf + 4;    
+    //for(x=0;x<32;x++)
+    for(x=0;x<33;x++)
+    {//Con 33 salen 40 columnas
       byte * dst=&XBuf[(x<<3)+BORDER];
       d = *src++;
       for (i=0;i<8;i++)
@@ -277,8 +289,14 @@ void bitbufBlit(unsigned char * buf)
         d <<= 1;
       }       
     }
-    emu_DrawLine(&XBuf[0], WIDTH, HEIGHT, y);   //Aqui dibujamos pixels    
-    buf += (ZX_VID_FULLWIDTH/8);
+    #ifdef use_lib_optimice_width_height
+     //emu_DrawLine(&XBuf[0], WIDTH, HEIGHT, y);   //Aqui dibujamos pixels
+     jj_direct_writeLine(y,&XBuf[0]);     
+    #else
+     emu_DrawLine(&XBuf[0], WIDTH, HEIGHT, y);   //Aqui dibujamos pixels    
+    #endif    
+    //buf += (ZX_VID_FULLWIDTH/8);
+    buf += (ZX_VID_FULLWIDTH>>3); //DIV 8
   }
   //jj_dumpvga();
 }
@@ -306,43 +324,44 @@ void bitbufBlit(unsigned char * buf)
 //JJ  } 
 //JJ }
 
-static void handleKeyBuf(void)
-{
-  if (timeout) {
-    timeout--;
-    if (timeout==0) {
-      memset(keyboard, 0xff, sizeof(keyboard)); 
-      emu_printf("key up");
-    }
-  }
-  else {
-    if (!(kcount == (sizeof(kBuf)/sizeof(int)))) {
-      emu_printf("key dw");     
-      timeout=tBuf[kcount];
-      int k=kBuf[kcount++];
-      // scan all possibilities
-      for (int j=0;j<8;j++) {
-        for(int i=0;i<5;i++){
-          if ( (k == map_qw[j][i]) ) {
-              keyboard[j] &= ~ (1<<(4-i));
-          }   
-        }  
-      } 
-      if (timeout == 0) {
-        timeout=tBuf[kcount];
-        int k=kBuf[kcount++];
-        // scan all possibilities
-        for (int j=0;j<8;j++) {
-          for(int i=0;i<5;i++){
-            if ( (k == map_qw[j][i]) ) {
-                keyboard[j] &= ~ (1<<(4-i));
-            }   
-          }  
-        }         
-      }      
-    }       
-  }
-}
+//No se usa
+//static void handleKeyBuf(void)
+//{
+//  if (timeout) {
+//    timeout--;
+//    if (timeout==0) {
+//      memset(keyboard, 0xff, sizeof(keyboard)); 
+//      emu_printf("key up");
+//    }
+//  }
+//  else {
+//    if (!(kcount == (sizeof(kBuf)/sizeof(int)))) {
+//      emu_printf("key dw");     
+//      timeout=tBuf[kcount];
+//      int k=kBuf[kcount++];
+//      // scan all possibilities
+//      for (int j=0;j<8;j++) {
+//        for(int i=0;i<5;i++){
+//          if ( (k == map_qw[j][i]) ) {
+//              keyboard[j] &= ~ (1<<(4-i));
+//          }   
+//        }  
+//      } 
+//      if (timeout == 0) {
+//        timeout=tBuf[kcount];
+//        int k=kBuf[kcount++];
+//        // scan all possibilities
+//        for (int j=0;j<8;j++) {
+//          for(int i=0;i<5;i++){
+//            if ( (k == map_qw[j][i]) ) {
+//                keyboard[j] &= ~ (1<<(4-i));
+//            }   
+//          }  
+//        }         
+//      }      
+//    }       
+//  }
+//}
 
 /* despite the name, this also works for the ZX80 :-) */
 void reset81()
@@ -398,17 +417,22 @@ void reset81()
 //*******************************************
 void load_p_flash(int a,unsigned char id)
 {
- emu_printf("loading p_flash...");
- emu_printf(tapename);
+ //emu_printf((char *)"loading p_flash...");
+ //emu_printf(tapename);
  #ifdef use_lib_log_serial
-  Serial.printf("Flash id:%d size:%d Title:%s\n",id,gb_list_pfile_size[id],gb_list_pfile_title[id]);
+  Serial.printf("loading p_flash...\n");
+  Serial.printf("%s\n",tapename);
+  //Serial.printf("Flash id:%d size:%d Title:%s\n",id,gb_list_pfile_size[id],gb_list_pfile_title[id]);
+  Serial.printf("Flash id:%d size:%d Title:%s\n",id,gb_ptr_pfile_size[id],gb_ptr_pfile_title[id]);
   Serial.printf("Modo zx80:%d\n",zx80);
  #endif
  //fflush(stdout);
- int size = gb_list_pfile_size[id];
+ //int size = gb_list_pfile_size[id];
+ int size = gb_ptr_pfile_size[id];
  autoload=0;
  int auxOffs= (zx80?0x4000:0x4009);
- memcpy(&mem[auxOffs], gb_list_pfile_data[id],size);
+ //memcpy(&mem[auxOffs], gb_list_pfile_data[id],size);
+ memcpy(&mem[auxOffs], gb_ptr_pfile[id],size);
  if(zx80)
  {
   store(0x400b,fetch(0x400b)+1);
@@ -678,18 +702,19 @@ void z81_Step(void)
 //JJ sound  Loop8910(&ay,20);     
 }
 
-static int endsWith(const char * s, const char * suffix)
-{
-  int retval = 0;
-  int len = strlen(s);
-  int slen = strlen(suffix);
-  if (len > slen ) {
-    if (!strcmp(&s[len-slen], suffix)) {
-      retval = 1;
-    }
-  }
-   return (retval);  
-}
+//No se usa
+//static int endsWith(const char * s, const char * suffix)
+//{
+//  int retval = 0;
+//  int len = strlen(s);
+//  int slen = strlen(suffix);
+//  if (len > slen ) {
+//    if (!strcmp(&s[len-slen], suffix)) {
+//      retval = 1;
+//    }
+//  }
+//   return (retval);  
+//}
 
 //void z81_Start(char * filename)
 //{
@@ -742,11 +767,13 @@ void z81_Start_Flash(unsigned char id)
  #endif 
  strcpy(tapename,""); //Quito cinta
  #ifdef use_lib_log_serial
-  Serial.printf("Tapename Flash:%s\n",gb_list_pfile_title[id]);
+  //Serial.printf("Tapename Flash:%s\n",gb_list_pfile_title[id]);
+  Serial.printf("Tapename Flash:%s\n",gb_ptr_pfile_title[id]);
   //fflush(stdout);
  #endif 
 
- int fsize= gb_list_pfile_size[id];
+ //int fsize= gb_list_pfile_size[id];
+ int fsize= gb_ptr_pfile_size[id];
  #ifdef use_lib_log_serial
   Serial.printf("Tape size:%d\n",fsize);
   //fflush(stdout);

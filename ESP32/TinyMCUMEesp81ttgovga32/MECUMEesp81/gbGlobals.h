@@ -3,8 +3,9 @@
 
  //#include <SDL/SDL.h>
  //extern SDL_Surface *screen;
+ #include "gbConfig.h"
  
-
+ extern unsigned char fskip;
 
  extern volatile unsigned char keymap[256];
  extern volatile unsigned char oldKeymap[256];
@@ -13,11 +14,22 @@
  extern unsigned char gb_show_osd_main_menu;
  extern unsigned char gb_load_new_pfile;
  extern unsigned char gb_id_cur_pfile;
+ extern const unsigned char **gb_ptr_pfile; //Puntero pfile
+ extern const int *gb_ptr_pfile_size; //Puntero a tamanios
+ extern const char **gb_ptr_pfile_title; //Puntero a titulos
+ extern const unsigned char gb_max_pfile;
 
 
+ #ifdef use_lib_tinybitluni_fast
+  extern unsigned char **gb_buffer_vga; //Puntero video 8 bits
+  extern unsigned int **gb_buffer_vga32; //Puntero video 32 bits
+ #endif
 
- extern unsigned char **gb_buffer_vga; //Puntero video 8 bits
- extern unsigned int **gb_buffer_vga32; //Puntero video 32 bits
+ #ifdef use_lib_cvbs_bitluni 
+  extern unsigned char **gb_buffer_cvbs;
+  extern unsigned int **gb_buffer_cvbs32;
+  extern unsigned char gb_color_cvbs[8];
+ #endif
 
  extern unsigned char gb_delay_tick_cpu_milis;
  extern unsigned char gb_auto_delay_cpu;
@@ -106,11 +118,13 @@ extern int nmigen,hsyncgen,vsync;
 
 
 extern unsigned char scrnbmp_new[ZX_VID_FULLWIDTH*ZX_VID_FULLHEIGHT/8]; //written
-extern unsigned char XBuf[WIDTH*8];
+extern unsigned char XBuf[(WIDTH+1)*8];
 
 extern unsigned int gb_time_blit_cur,gb_time_blit_before; 
 
 extern unsigned char gb_invert_color;
+
+extern unsigned char gb_soft_reset;
 
 #endif
 

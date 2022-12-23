@@ -7,7 +7,7 @@
 #include "hardware.h"
 #include "PS2Kbd.h"
 #include "gb_sdl_font8x8.h"
-#include "dataFlash/gbpfile.h"
+//#include "dataFlash/gbpfile.h"
 
 
 //#define BLACK   0
@@ -19,28 +19,20 @@
 //#define YELLOW  3
 //#define WHITE   15
 
-#ifdef COLOR_3B           //       BGR 
- #define BLACK   0x08      // 0000 1000
- #define BLUE    0x0C      // 0000 1100
- #define RED     0x09      // 0000 1001
- #define MAGENTA 0x0D      // 0000 1101
- #define GREEN   0x0A      // 0000 1010
- #define CYAN    0x0E      // 0000 1110
- #define YELLOW  0x0B      // 0000 1011
- #define WHITE   0x0F      // 0000 1111
-#endif
+//#ifdef COLOR_3B           //       BGR 
+// #define BLACK   0x08      // 0000 1000
+// #define BLUE    0x0C      // 0000 1100
+// #define RED     0x09      // 0000 1001
+// #define MAGENTA 0x0D      // 0000 1101
+// #define GREEN   0x0A      // 0000 1010
+// #define CYAN    0x0E      // 0000 1110
+// #define YELLOW  0x0B      // 0000 1011
+// #define WHITE   0x0F      // 0000 1111
+//#endif
 
-
-//extern int gb_screen_xIni;
-//extern int gb_screen_yIni;
-//extern unsigned char gb_cache_zxcolor[8];
 
 
 unsigned char gb_show_osd_main_menu=0;
-
-//extern SDL_Surface * gb_screen;
-//extern SDL_Event gb_event;
-
 
 
 
@@ -78,15 +70,8 @@ const char * gb_main_menu[max_gb_main_menu]={
  "Return"
 };
 
-//#define max_gb_machine_menu 3
-//const char * gb_machine_menu[max_gb_machine_menu]={
-// "464",
-// "664",
-// "6128"
-//};
 
-
-#define max_gb_delay_cpu_menu 12
+#define max_gb_delay_cpu_menu 15
 const char * gb_delay_cpu_menu[max_gb_delay_cpu_menu]={
  "Auto",
  "0",
@@ -99,7 +84,10 @@ const char * gb_delay_cpu_menu[max_gb_delay_cpu_menu]={
  "7",
  "8",
  "9",
- "10"
+ "10",
+ "16",
+ "20",
+ "40"
 };
 
 
@@ -203,7 +191,7 @@ void SDLprintCharOSD(char car,int x,int y,unsigned char color,unsigned char back
 // unsigned char aux = gb_sdl_font_6x8[(car-64)];
  int auxId = car << 3; //*8
  unsigned char aux;
- unsigned char auxBit,auxColor;
+ unsigned char auxColor;
  for (unsigned char j=0;j<8;j++)
  {
   aux = gb_sdl_font_8x8[auxId + j];
@@ -240,24 +228,25 @@ void OSDMenuRowsDisplayScroll(const char **ptrValue,unsigned char currentId,unsi
   if (currentId >= aMax)
    break;
   //SDLprintText(gb_osd_sdl_surface,ptrValue[currentId],gb_pos_x_menu,gb_pos_y_menu+8+(i<<3),((i==0)?CYAN:WHITE),((i==0)?BLUE:BLACK),1);
-  SDLprintText(ptrValue[currentId],gb_pos_x_menu,gb_pos_y_menu+8+(i<<3),((i==0)?ID_COLOR_WHITE:ID_COLOR_WHITE),((i==0)?ID_COLOR_VIOLETA:ID_COLOR_BLACK));
+  SDLprintText(ptrValue[currentId],gb_pos_x_menu,gb_pos_y_menu+8+(i<<3),((i==0)?ID_COLOR_BLACK:ID_COLOR_WHITE),((i==0)?ID_COLOR_WHITE:ID_COLOR_BLACK));
   currentId++;
  }     
 }
 
 //Maximo 256 elementos
-unsigned char ShowTinyMenu(const char *cadTitle,const char **ptrValue,unsigned char aMax)
+unsigned char ShowTinyMenu(const char *cadTitle,const char **ptrValue,unsigned char aMax,short int aSel)
 {
  unsigned char aReturn=0;
  unsigned char salir=0;
  SDLClear();
- SDLprintText("MCUME ZX81 by Ackerman",gb_pos_x_menu-(4<<3),gb_pos_y_menu-16,ID_COLOR_WHITE,ID_COLOR_BLACK);
+ SDLprintText("MCUME ZX81 mod by Ackerman",gb_pos_x_menu-(4<<3),gb_pos_y_menu-16,ID_COLOR_WHITE,ID_COLOR_BLACK);
  //for (int i=0;i<20;i++) 
  for (int i=0;i<14;i++) 
   SDLprintCharOSD(' ',gb_pos_x_menu+(i<<3),gb_pos_y_menu,ID_COLOR_BLACK,ID_COLOR_WHITE);
  SDLprintText(cadTitle,gb_pos_x_menu,gb_pos_y_menu,ID_COLOR_BLACK,ID_COLOR_WHITE);
 
- OSDMenuRowsDisplayScroll(ptrValue,0,aMax);
+ aReturn = (aSel!=-1)?aSel:0;
+ OSDMenuRowsDisplayScroll(ptrValue,aReturn,aMax);
  
  while (salir == 0)
  {
@@ -334,9 +323,13 @@ unsigned char ShowTinyMenu(const char *cadTitle,const char **ptrValue,unsigned c
 void ShowTinyLoadPMenu()
 {
  unsigned char aSelNum;     
- aSelNum = ShowTinyMenu("PFILE",gb_list_pfile_title,max_list_pfile);
- gb_load_new_pfile = 1;
- gb_id_cur_pfile = aSelNum;
+ //aSelNum = ShowTinyMenu("PFILE",gb_list_pfile_title,max_list_pfile,gb_id_cur_pfile);
+ aSelNum = ShowTinyMenu("PFILE",gb_ptr_pfile_title,gb_max_pfile,gb_id_cur_pfile);
+ if (aSelNum != 255)
+ {
+  gb_load_new_pfile = 1;
+  gb_id_cur_pfile = aSelNum;
+ }
 }
 
 //Menu ROM
@@ -363,7 +356,11 @@ void ShowTinyMachineMenu()
 void ShowTinyResetMenu()
 {
  unsigned char aSelNum;
- aSelNum= ShowTinyMenu("Reset",gb_reset_menu,max_gb_reset_menu);   
+ aSelNum= ShowTinyMenu("Reset",gb_reset_menu,max_gb_reset_menu,-1);   
+ if (aSelNum==255)
+ {
+   return;
+ }
  //loadroms2FlashModel();
  //resetz80();
  //resetcrtc(); 
@@ -374,6 +371,7 @@ void ShowTinyResetMenu()
  else
  {
    gb_load_new_pfile=1;
+   gb_soft_reset=1;
  } 
 }
 
@@ -408,9 +406,11 @@ void ShowTinySCRMenu()
 void ShowTinySpeedMenu()
 {
  unsigned char aSelNum;
- aSelNum = ShowTinyMenu("Delay CPU",gb_delay_cpu_menu,max_gb_delay_cpu_menu);
+ aSelNum = ShowTinyMenu("Delay CPU",gb_delay_cpu_menu,max_gb_delay_cpu_menu,-1);
  if (aSelNum == 255)
+ {
   return;
+ }
 
  gb_auto_delay_cpu= (aSelNum==0)?1:0;//Auto delay
  switch (aSelNum)
@@ -427,13 +427,21 @@ void ShowTinySpeedMenu()
   case 9: gb_delay_tick_cpu_milis= 8; break;
   case 10: gb_delay_tick_cpu_milis= 9; break;
   case 11: gb_delay_tick_cpu_milis= 10; break;
+  case 12: gb_delay_tick_cpu_milis= 16; break;
+  case 13: gb_delay_tick_cpu_milis= 20; break;
+  case 14: gb_delay_tick_cpu_milis= 30; break;  
+  case 15: gb_delay_tick_cpu_milis= 40; break;  
  }
 }
 
 void ShowTinyKeyboardPollMenu()
 {
  unsigned char aSelNum;
- aSelNum = ShowTinyMenu("Poll ms Keyboard",gb_speed_keyboard_poll_menu,max_gb_speed_keyboard_poll_menu);
+ aSelNum = ShowTinyMenu("Poll ms Keyboard",gb_speed_keyboard_poll_menu,max_gb_speed_keyboard_poll_menu,-1);
+ if (aSelNum==255)
+ {
+   return;
+ }
  switch (aSelNum)
  {
   case 0: gb_keyboard_cur_poll_ms= 10; break;
@@ -447,7 +455,11 @@ void ShowTinyKeyboardPollMenu()
 void ShowTinyVGAPollMenu()
 {
  unsigned char aSelNum;
- aSelNum = ShowTinyMenu("Poll ms VGA",gb_speed_video_poll_menu,max_gb_speed_video_poll_menu );
+ aSelNum = ShowTinyMenu("Poll ms VGA",gb_speed_video_poll_menu,max_gb_speed_video_poll_menu,-1);
+ if (aSelNum==255)
+ {
+   return;
+ }
  switch (aSelNum)
  {
   case 0: gb_blit_cur_poll_ms= 0; break;
@@ -579,7 +591,7 @@ void do_tinyOSD()
 
  if (gb_show_osd_main_menu == 1)
  {
-  aSelNum = ShowTinyMenu("MAIN MENU",gb_main_menu,max_gb_main_menu);
+  aSelNum = ShowTinyMenu("MAIN MENU",gb_main_menu,max_gb_main_menu,-1);
   switch (aSelNum)
   {
    case 0:
@@ -599,7 +611,9 @@ void do_tinyOSD()
    case 4: ShowTinyKeyboardPollMenu();
     gb_show_osd_main_menu=0;
     break;    
-   case 5: gb_invert_color = (~gb_invert_color)&0x01; break;
+   case 5:
+    gb_invert_color = (~gb_invert_color)&0x01; //invertir color
+    break;
    default: break;
   }  
  }

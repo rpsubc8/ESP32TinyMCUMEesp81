@@ -18,7 +18,7 @@
 
 
 #include <string.h>	//for memset/memcpy
-#include "Z80.h"
+#include "z80.h"
 #include "zx81.h"
 #include "gbGlobals.h"
 
