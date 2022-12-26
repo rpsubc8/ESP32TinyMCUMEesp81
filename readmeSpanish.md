@@ -86,7 +86,7 @@ El archivo <b>gbConfig.h</b> se seleccionan las opciones:
  <li><b>use_lib_delay_tick_cpu_auto:</b> Si está a 1, la CPU se autoajusta a 20 ms por frame.</li>
  <li><b>use_lib_delay_tick_cpu_milis:</b> Si use_lib_delay_tick_cpu_auto está a 0, lo que definamos aqui, será la espera en milisegundos por frame.</li>
  <li><b>FIX_PERIBOARD_NOT_INITING:</b> Solución realizada por <b>dcrespo3D</b> para la inicialización en algunos teclados.</li>
- <li><b>use_lib_cvbs_bitluni:</b> Si está activo, no usa código de VGA, ni genera salida VGA. Usa la librería modificada de CVBS Bitluni. Si está comentado, usa todo el código de VGA. En la paca TTGO VGA32 se está usando el pin 26, es decir, el CLK del conector PS/2 del ratón.</li>
+ <li><b>use_lib_cvbs_bitluni:</b> Si está activo, no usa código de VGA, ni genera salida VGA. Usa la librería modificada de CVBS Bitluni. Si está comentado, usa todo el código de VGA. En la placa TTGO VGA32 se está usando el pin 26, es decir, el CLK del conector PS/2 del ratón.</li>
  <li><b>use_lib_cvbs_bitluni_not_backbuffer:</b> No usa el doble buffer en CVBS, ahorrando memoria. Puede ocasionar defectos visuales (flickering).</li>
  <li><b>use_lib_cvbs_pal:</b> Si está activo junto con use_lib_cvbs_bitluni, la salida de video será en norma PAL, sino NTSC.</li>
  <li><b>use_lib_cvbs_ttgo_vga32:</b> La placa TTGO VGA32 utiliza una salida de 5 voltios, en lugar de 3v. Por tanto se debe tener descomentada dicha línea si se usa la salida de TV, para poder reducir a 1 voltio la salida del DAC.</li>
