@@ -36,7 +36,19 @@ He realizado varias modificaciones:
 </ul>
 
 
-<br>
+<br><br>
+<h1>Versión precompilada</h1>
+En la carpeta precompile se encuentra una versión ya compilada para poder ser grabada con el flash download tool 3.9.2. Se trata de una versión VGA 320x200 con los juegos de demostración en FLASH.<br><br>
+<a href='https://github.com/rpsubc8/ESP32TinyMCUMEesp81/tree/main/esp32/precompile'>https://github.com/rpsubc8/ESP32TinyMCUMEesp81/tree/main/esp32/precompile</a>
+<br><br>
+Debemos de elegir el tipo ESP32:
+<center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/flash00.gif'></center>
+Posteriormente, seleccionaremos los archivos tal y como la captura adjunta, con los mismos valores de offset:
+<center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/flash01.gif'></center>
+Y le daremos a start. Si todo ha sido correcto, sólo tendremos que reiniciar el ESP32.
+
+
+<br><br>
 <h1>Requerimientos</h1>
 Se requiere:
  <ul>
