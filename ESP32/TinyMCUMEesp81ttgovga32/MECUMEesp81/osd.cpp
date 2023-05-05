@@ -178,11 +178,19 @@ void SDLClear()
  // for (int x=0; x<(auxSurface->h); x++)
  //  SDLputpixel(auxSurface,x,y,1);
  //for (int y=0; y<200; y++)
- // for (int x=0; x<320; x++)   
+ // for (int x=0; x<320; x++)
  for (int y=0; y<200; y++)
-  for (int x=0; x<320; x++)    
-   jj_fast_putpixel(x,y,0);
-   //SDLputpixel(auxSurface,x,y,3); 
+ {
+  #ifdef use_lib_vga360x200
+   for (int x=0; x<360; x++)
+  #else
+   for (int x=0; x<320; x++)
+  #endif
+   {
+    jj_fast_putpixel(x,y,0);
+   }   
+ }
+ //SDLputpixel(auxSurface,x,y,3);  
 }
 
 //*************************************************************************************

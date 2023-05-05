@@ -1,6 +1,49 @@
 #ifndef _GB_CONFIG_H
  #define _GB_CONFIG_H
 
+ //Not use double numbers (IEEE not fpu) calculate vga frequency
+ //#define use_lib_fix_double_precision
+
+ //Debug i2s bitluni vga frequency
+ //#define use_lib_debug_i2s
+
+ //Video mode selection VGA
+ //Select one mode and deselect other modes
+ //360x200 720x400 31.3 Khz 70.3 Hz freq:28322000 pixel_clock:14161000
+ #define use_lib_vga360x200x70hz_bitluni
+ //320x200 720x400 31.4 Khz 70.0 Hz freq:25175000 pixel_clock:12587500
+ //#define use_lib_vga320x200x70hz_bitluni
+ //320x200 70Hz freq:12587500 funciona
+ //#define use_lib_vga320x200x70hz_fabgl
+
+
+
+ #ifdef use_lib_vga360x200x70hz_bitluni
+  #define use_lib_vga360x200  
+ #else  
+  #ifdef use_lib_vga320x200x70hz_bitluni
+   #define use_lib_vga320x200
+  #else
+   #ifdef use_lib_vga320x200x70hz_fabgl
+    #define use_lib_vga320x200
+    #ifndef use_lib_fix_double_precision
+     #define use_lib_fix_double_precision
+    #endif    
+   #endif
+  #endif  
+ #endif
+
+
+ #ifdef use_lib_vga360x200
+  //Borde izquierdo para centrar imagen en 360x200
+  //Multiplo de 4 pixels, no poner mas de 10 o falla por salirse del buffer
+  //valores validos: 0 2 4 6 8 10
+  #define use_lib_border_x 4
+ #else
+  #define use_lib_border_x 0
+ #endif 
+
+
  //Usa bitluni cvbs video 26 audio 25.Si no usa cvbs, usa VGA
  //#define use_lib_cvbs_bitluni 
  //No uso doble buffer, ahorro memoria
@@ -55,8 +98,10 @@
  //#define gb_ms_vga 20 
 
 
+ //Show Time measurement
+ //#define use_lib_stats_time_unified
 
- //Logs
+ //Show Logs
  #define use_lib_log_serial
  
 
@@ -65,16 +110,6 @@
  
  //No usarlo Pruebas
  //#define use_lib_bitluni_low_memory
- 
- 
- //Delay millis iteration emulate 
- //No usarlo Pruebas
- //#define gb_delay_emulate_ms 0
 
-
-
- //Desplazamiento X en multiplos de 4 pixels (32 bits)
- //Desplazamiento Y en pixels
- //#define gb_add_offset_x 20 
- //#define gb_add_offset_y 40 
 #endif
+

@@ -420,11 +420,11 @@ void load_p_flash(int a,unsigned char id)
  //emu_printf((char *)"loading p_flash...");
  //emu_printf(tapename);
  #ifdef use_lib_log_serial
-  Serial.printf("loading p_flash...\n");
-  Serial.printf("%s\n",tapename);
+  Serial.printf("loading p_flash...\r\n");
+  Serial.printf("%s\r\n",tapename);
   //Serial.printf("Flash id:%d size:%d Title:%s\n",id,gb_list_pfile_size[id],gb_list_pfile_title[id]);
-  Serial.printf("Flash id:%d size:%d Title:%s\n",id,gb_ptr_pfile_size[id],gb_ptr_pfile_title[id]);
-  Serial.printf("Modo zx80:%d\n",zx80);
+  Serial.printf("Flash id:%d size:%d Title:%s\r\n",id,gb_ptr_pfile_size[id],gb_ptr_pfile_title[id]);
+  Serial.printf("Modo zx80:%d\r\n",zx80);
  #endif
  //fflush(stdout);
  //int size = gb_list_pfile_size[id];
@@ -459,7 +459,7 @@ void zx81hacks()
   mem[0x34a]=0xc3; mem[0x34b]=0x07; mem[0x34c]=0x02;
   
  #ifdef use_lib_log_serial
-  Serial.printf("zx81hacks\n");
+  Serial.printf("zx81hacks\r\n");
   //fflush(stdout);
  #endif 
 }
@@ -475,7 +475,7 @@ void zx80hacks()
   mem[0x208]=0xc3; mem[0x209]=0x83; mem[0x20a]=0x02;
   
   #ifdef use_lib_log_serial
-   Serial.printf("zx80hacks\n");
+   Serial.printf("zx80hacks\r\n");
    //fflush(stdout);  
   #endif 
 }
@@ -652,7 +652,7 @@ static void initmem()
 void z81_Init_Flash(unsigned char id)
 {
  #ifdef use_lib_log_serial  
-  Serial.printf("z81_Init_Flash\n");
+  Serial.printf("z81_Init_Flash\r\n");
   //fflush(stdout);
  #endif 
  //load rom with ghosting at 0x2000
@@ -661,7 +661,7 @@ void z81_Init_Flash(unsigned char id)
  {
   memcpy( mem + 0x0000, zx80rom, siz );    
   #ifdef use_lib_log_serial
-   Serial.printf("copiado zx80rom\n");
+   Serial.printf("copiado zx80rom\r\n");
    //fflush(stdout);
   #endif 
  }
@@ -669,7 +669,7 @@ void z81_Init_Flash(unsigned char id)
  {
   memcpy( mem + 0x0000, zx81rom, siz );   
   #ifdef use_lib_log_serial
-   Serial.printf("copiado zx81rom\n");
+   Serial.printf("copiado zx81rom\r\n");
    //fflush(stdout);    
   #endif 
  }
@@ -686,7 +686,7 @@ void z81_Init_Flash(unsigned char id)
 
  ResetZ80_Flash(id);
  #ifdef use_lib_log_serial
-  Serial.printf("Fin z81_Init\n");
+  Serial.printf("Fin z81_Init\r\n");
   //fflush(stdout);
  #endif 
 } 
@@ -762,27 +762,27 @@ void z81_Step(void)
 void z81_Start_Flash(unsigned char id)
 {
  #ifdef use_lib_log_serial
-  Serial.printf("z81_Start_Flash\n");
+  Serial.printf("z81_Start_Flash\r\n");
   //fflush(stdout);
  #endif 
  strcpy(tapename,""); //Quito cinta
  #ifdef use_lib_log_serial
   //Serial.printf("Tapename Flash:%s\n",gb_list_pfile_title[id]);
-  Serial.printf("Tapename Flash:%s\n",gb_ptr_pfile_title[id]);
+  Serial.printf("Tapename Flash:%s\r\n",gb_ptr_pfile_title[id]);
   //fflush(stdout);
  #endif 
 
  //int fsize= gb_list_pfile_size[id];
  int fsize= gb_ptr_pfile_size[id];
  #ifdef use_lib_log_serial
-  Serial.printf("Tape size:%d\n",fsize);
+  Serial.printf("Tape size:%d\r\n",fsize);
   //fflush(stdout);
  #endif 
  if (fsize == 0)
  { 
   autoload = 0;
   #ifdef use_lib_log_serial  
-   Serial.printf("no autoload\n");
+   Serial.printf("no autoload\r\n");
    //fflush(stdout);
   #endif 
  }

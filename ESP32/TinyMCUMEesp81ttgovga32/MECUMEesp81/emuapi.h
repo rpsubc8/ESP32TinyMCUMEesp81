@@ -98,19 +98,19 @@
 //void emu_Init(char *ROM);
 
 //JJ extern void emu_init(void);
-extern void emu_printf(char * text);
-extern void emu_printi(int val);
+//extern void emu_printf(char * text);
+//extern void emu_printi(int val);
 //JJ extern void * emu_Malloc(int size);
 //JJ extern void emu_Free(void * pt);
 
-extern int emu_FileOpen(char * filename);
-extern int emu_FileRead(char * buf, int size);
-extern unsigned char emu_FileGetc(void);
-extern int emu_FileSeek(int seek);
-extern void emu_FileClose(void);
-extern int emu_FileSize(char * filename);
-extern int emu_LoadFile(char * filename, char * buf, int size);
-extern int emu_LoadFileSeek(char * filename, char * buf, int size, int seek);
+//extern int emu_FileOpen(char * filename);
+//extern int emu_FileRead(char * buf, int size);
+//extern unsigned char emu_FileGetc(void);
+//extern int emu_FileSeek(int seek);
+//extern void emu_FileClose(void);
+//extern int emu_FileSize(char * filename);
+//extern int emu_LoadFile(char * filename, char * buf, int size);
+//extern int emu_LoadFileSeek(char * filename, char * buf, int size, int seek);
 
 //JJ extern void emu_InitJoysticks(void);
 //JJ extern int emu_SwapJoysticks(int statusOnly);

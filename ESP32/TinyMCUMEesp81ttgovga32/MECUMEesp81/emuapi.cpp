@@ -47,7 +47,7 @@
 
 //JJ extern ILI9341_t3DMA tft;
 
-static char romspath[64];
+//static char romspath[64];
 //JJ static int calMinX=-1,calMinY=-1,calMaxX=-1,calMaxY=-1;
 //JJ static sdmmc_card_t* card;
 //JJ const uint16_t deflogo[] = {
@@ -598,21 +598,21 @@ static char romspath[64];
 //JJ }
 
 
-void emu_printf(char * text)
-{
- #ifdef use_lib_log_serial
-  Serial.printf("%s\n",text);
-  //fflush(stdout);
- #endif 
-}
+//void emu_printf(char * text)
+//{
+// #ifdef use_lib_log_serial
+//  Serial.printf("%s\r\n",text);
+//  //fflush(stdout);
+// #endif 
+//}
 
 
-void emu_printi(int val)
-{
- #ifdef use_lib_log_serial
-  Serial.printf("%d\n",val);
- #endif 
-}
+//void emu_printi(int val)
+//{
+// #ifdef use_lib_log_serial
+//  Serial.printf("%d\n",val);
+// #endif 
+//}
 
 //void emu_Init(char *ROM)
 //{
@@ -665,7 +665,7 @@ void emu_Init_Flash(unsigned char id)
 //JJ }
 
 
-static FILE * lastfileOpened;
+//static FILE * lastfileOpened;
 
 
 //int emu_FileOpen(char * filename)
@@ -701,130 +701,130 @@ static FILE * lastfileOpened;
 //  return (retval);
 //}
 
-int emu_FileRead(char * buf, int size)
-{
-  int retval = fread(buf, 1, size, lastfileOpened);
-  if (retval != size) 
-  {
-   #ifdef use_lib_log_serial
-    Serial.printf("FileRead failed\n");
-    //fflush(stdout);
-   #endif 
-  }
-  #ifdef use_lib_log_serial
-   Serial.printf("FileRead size:%d %d\n",retval,size);
-   //fflush(stdout);
-  #endif 
-  return (retval);     
-}
+//int emu_FileRead(char * buf, int size)
+//{
+//  int retval = fread(buf, 1, size, lastfileOpened);
+//  if (retval != size) 
+//  {
+//   #ifdef use_lib_log_serial
+//    Serial.printf("FileRead failed\n");
+//    //fflush(stdout);
+//   #endif 
+//  }
+//  #ifdef use_lib_log_serial
+//   Serial.printf("FileRead size:%d %d\n",retval,size);
+//   //fflush(stdout);
+//  #endif 
+//  return (retval);     
+//}
 
-unsigned char emu_FileGetc(void) {
-  unsigned char c;
-  int retval = fread(&c, 1, 1, lastfileOpened);
-  if (retval != 1)
-  {
-   #ifdef use_lib_log_serial
-    Serial.printf("emu_FileGetc failed\n");
-   #endif 
-  }  
-  return c; 
-}
+//unsigned char emu_FileGetc(void) {
+//  unsigned char c;
+//  int retval = fread(&c, 1, 1, lastfileOpened);
+//  if (retval != 1)
+//  {
+//   #ifdef use_lib_log_serial
+//    Serial.printf("emu_FileGetc failed\n");
+//   #endif 
+//  }  
+//  return c; 
+//}
 
 
-void emu_FileClose(void)
-{
-  fclose(lastfileOpened);  
-}
+//void emu_FileClose(void)
+//{
+//  fclose(lastfileOpened);  
+//}
 
-int emu_FileSize(char * filename) 
-{
-  int filesize=0;
-  char filepath[80];
-//JJ  strcpy(filepath, romspath);
-//JJ  strcat(filepath, "/");
-  strcat(filepath, filename);
-  #ifdef use_lib_log_serial
-   Serial.printf("FileSize...%s\n",filepath);   
-   //fflush(stdout);
-  #endif 
+//int emu_FileSize(char * filename) 
+//{
+//  int filesize=0;
+//  char filepath[80];
+////JJ  strcpy(filepath, romspath);
+////JJ  strcat(filepath, "/");
+//  strcat(filepath, filename);
+//  #ifdef use_lib_log_serial
+//   Serial.printf("FileSize...%s\n",filepath);   
+//   //fflush(stdout);
+//  #endif 
+//
+//  FILE * file = fopen(filepath, "rb");
+//  if (file) {
+//    fseek(file, 0L, SEEK_END);
+//    filesize = ftell(file);
+//    //fseek(file, 0L, SEEK_SET);
+//    #ifdef use_lib_log_serial
+//     Serial.printf("filesize is...%d\n",filesize);    
+//     //fflush(stdout);
+//    #endif 
+//    fclose(file);    
+//  }
+// 
+//  return(filesize);  
+//}
 
-  FILE * file = fopen(filepath, "rb");
-  if (file) {
-    fseek(file, 0L, SEEK_END);
-    filesize = ftell(file);
-    //fseek(file, 0L, SEEK_SET);
-    #ifdef use_lib_log_serial
-     Serial.printf("filesize is...%d\n",filesize);    
-     //fflush(stdout);
-    #endif 
-    fclose(file);    
-  }
- 
-  return(filesize);  
-}
+//int emu_FileSeek(int seek) 
+//{
+//  fseek(lastfileOpened, seek, SEEK_SET);     
+//  return (seek);
+//}
 
-int emu_FileSeek(int seek) 
-{
-  fseek(lastfileOpened, seek, SEEK_SET);     
-  return (seek);
-}
+//int emu_LoadFile(char * filename, char * buf, int size)
+//{
+//  int filesize = 0;
+//    
+//  char filepath[80];
+//  strcpy(filepath, romspath);
+//  strcat(filepath, "/");
+//  strcat(filepath, filename);
+//  #ifdef use_lib_log_serial
+//   Serial.printf("LoadFile...%s\n",filepath);  
+//  #endif 
+//
+//  filesize = emu_FileSize(filename);
+//  FILE * file = fopen(filepath, "rb");
+//  if (file) {
+//    if (size >= filesize)
+//    {
+//      if (fread(buf, 1, filesize, file) != filesize) 
+//      {
+//       #ifdef use_lib_log_serial
+//        Serial.printf("File read failed\n");
+//       #endif 
+//      }        
+//    }
+//    fclose(file);
+//  }
+//  
+//  return(filesize);
+//}
 
-int emu_LoadFile(char * filename, char * buf, int size)
-{
-  int filesize = 0;
-    
-  char filepath[80];
-  strcpy(filepath, romspath);
-  strcat(filepath, "/");
-  strcat(filepath, filename);
-  #ifdef use_lib_log_serial
-   Serial.printf("LoadFile...%s\n",filepath);  
-  #endif 
-
-  filesize = emu_FileSize(filename);
-  FILE * file = fopen(filepath, "rb");
-  if (file) {
-    if (size >= filesize)
-    {
-      if (fread(buf, 1, filesize, file) != filesize) 
-      {
-       #ifdef use_lib_log_serial
-        Serial.printf("File read failed\n");
-       #endif 
-      }        
-    }
-    fclose(file);
-  }
-  
-  return(filesize);
-}
-
-int emu_LoadFileSeek(char * filename, char * buf, int size, int seek)
-{
-  int filesize = 0;
-    
-  char filepath[80];
-  strcpy(filepath, romspath);
-  strcat(filepath, "/");
-  strcat(filepath, filename);
-  #ifdef use_lib_log_serial
-   Serial.printf("LoadFileSeek...%d bytes at %d from %s\n",size,seek,filepath); 
-  #endif 
-
-  FILE * file = fopen(filepath, "rb");
-  if (file) {
-    fseek(file, seek, SEEK_SET);       
-    if (fread(buf, size, 1, file) != size) 
-    {
-     #ifdef use_lib_log_serial
-      Serial.printf("File read failed\n");
-     #endif 
-    }        
-    fclose(file);
-  }
-  
-  return(filesize);
-}
+//int emu_LoadFileSeek(char * filename, char * buf, int size, int seek)
+//{
+//  int filesize = 0;
+//    
+//  char filepath[80];
+//  strcpy(filepath, romspath);
+//  strcat(filepath, "/");
+//  strcat(filepath, filename);
+//  #ifdef use_lib_log_serial
+//   Serial.printf("LoadFileSeek...%d bytes at %d from %s\n",size,seek,filepath); 
+//  #endif 
+//
+//  FILE * file = fopen(filepath, "rb");
+//  if (file) {
+//    fseek(file, seek, SEEK_SET);       
+//    if (fread(buf, size, 1, file) != size) 
+//    {
+//     #ifdef use_lib_log_serial
+//      Serial.printf("File read failed\n");
+//     #endif 
+//    }        
+//    fclose(file);
+//  }
+//  
+//  return(filesize);
+//}
 
 //JJ static int keypadval=0; 
 //JJ static bool joySwapped = false;
@@ -1236,8 +1236,12 @@ short int fb_height = 200;
   // //y += (fb_height-HEIGHT)/2;
   // y += (fb_height-HEIGHT)>>1; //DIV 2
   //}
-  auxY= y;
-  auxX= 0;
+  auxY= y;  
+  #ifdef use_lib_tinybitluni_fast   
+   auxX= use_lib_border_x; //360x200 4x4=16 pixels borde izquierda      
+  #else
+   auxX= 0; //Si es cvbs o cualquier cosa
+  #endif 
   
   //if (WIDTH <= fb_width) 
   //{

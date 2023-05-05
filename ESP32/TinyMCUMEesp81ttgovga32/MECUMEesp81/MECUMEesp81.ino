@@ -309,7 +309,7 @@ void setup()
 
  #ifdef use_lib_log_serial
   Serial.begin(115200);         
-  Serial.printf("HEAP BEGIN %d\n", ESP.getFreeHeap()); 
+  Serial.printf("HEAP BEGIN %d\r\n", ESP.getFreeHeap()); 
  #endif
  
  #ifdef use_lib_tinybitluni_fast  
@@ -317,16 +317,24 @@ void setup()
   //vga_init(pin_config,vga_mode_320x240,false);
   //vga_init(pin_config,vga_mode_320x200,false); //funciona
   //vga_init(pin_config,vga_mode_240x240,false); //funciona  
-  vga_init(pin_config,VgaMode_vga_mode_320x200,false); //Llamada en C     
+  #ifdef use_lib_vga320x200
+   vga_init(pin_config,VgaMode_vga_mode_320x200,false); //320x200 bitluni clasico
+  #else
+   #ifdef use_lib_vga360x200 
+    vga_init(pin_config,VgaMode_vga_mode_360x200,false); //360x200
+   #endif 
+  #endif
   //vga_init(pin_config,VgaMode_vga_mode_320x200,false); //Llamada en C
 
   //Serial.printf("pin_config size:%d\n",sizeof(pin_config));
   gb_sync_bits= vga_get_sync_bits();
   gb_buffer_vga = vga_get_framebuffer();
   gb_buffer_vga32=(unsigned int **)gb_buffer_vga;
-  Serial.printf("Fast Tiny Bitluni\n");
-  Serial.printf("vsync_inv_bit:0x%02X hsync_inv_bit:0x%02X\n",vga_get_vsync_inv_bit(),vga_get_hsync_inv_bit());
-  Serial.printf("Sync bits:0x%02X\n",gb_sync_bits);
+  #ifdef use_lib_log_serial
+   Serial.printf("Fast Tiny Bitluni\r\n");
+   Serial.printf("vsync_inv_bit:0x%02X hsync_inv_bit:0x%02X\r\n",vga_get_vsync_inv_bit(),vga_get_hsync_inv_bit());
+   Serial.printf("Sync bits:0x%02X\r\n",gb_sync_bits);
+  #endif 
   PreparaColorVGA();
   SDLClear();
   //En 320x200 sale bits:0x80 y deberia ser 0x40
@@ -391,9 +399,9 @@ void setup()
  
  #ifdef use_lib_log_serial
   #ifdef use_lib_cvbs_bitluni
-   Serial.printf("CVBS %d\n", ESP.getFreeHeap()); 
+   Serial.printf("CVBS %d\r\n", ESP.getFreeHeap()); 
   #else
-   Serial.printf("VGA %d\n", ESP.getFreeHeap()); 
+   Serial.printf("VGA %d\r\n", ESP.getFreeHeap()); 
   #endif 
  #endif
 
@@ -411,7 +419,7 @@ void setup()
  ResetZ80_Flash(0);
 
  #ifdef use_lib_log_serial  
-  Serial.printf("END SETUP %d\n", ESP.getFreeHeap()); 
+  Serial.printf("END SETUP %d\r\n", ESP.getFreeHeap()); 
  #endif 
 }
 
@@ -647,7 +655,9 @@ void loop()
   gb_cpu_timer_before= gb_cpu_timer_cur;
   if (tiempo_vga == 1)
   {
-   Serial.printf("c:%u m:%u mx:%u vc:%u m:%u mx:%u\n",gb_cur_cpu_ticks,gb_min_cpu_ticks,gb_max_cpu_ticks, gb_cur_vga_ticks,gb_min_vga_ticks,gb_max_vga_ticks);
+   #ifdef use_lib_stats_time_unified
+    Serial.printf("c:%u m:%u mx:%u vc:%u m:%u mx:%u\r\n",gb_cur_cpu_ticks,gb_min_cpu_ticks,gb_max_cpu_ticks, gb_cur_vga_ticks,gb_min_vga_ticks,gb_max_vga_ticks);
+   #endif 
    //Reseteo VGA
    gb_min_vga_ticks= 1000000;
    gb_max_vga_ticks= 0;
@@ -656,7 +666,9 @@ void loop()
   }
   else
   {//Imprimo CPU
-   Serial.printf("c:%u m:%u mx:%u\n",gb_cur_cpu_ticks,gb_min_cpu_ticks,gb_max_cpu_ticks);
+   #ifdef use_lib_stats_time_unified
+    Serial.printf("c:%u m:%u mx:%u\r\n",gb_cur_cpu_ticks,gb_min_cpu_ticks,gb_max_cpu_ticks);
+   #endif 
   }
 
   //Reseteo CPU a 1 segundo

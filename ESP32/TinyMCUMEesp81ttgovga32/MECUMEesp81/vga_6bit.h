@@ -24,6 +24,20 @@ const int VgaMode_vga_mode_320x200[12]={
  8,48,24,320,12,2,35,400,2,12587500,0,1 //funciona con 0,1
 };
 
+const int VgaMode_vga_mode_320x240[12]={ 
+ 8,48,24,320,11,2,31,480,2,12587500,1,1
+ //const Mode VGA::MODE320x240(8, 48, 24, 320, 11, 2, 31, 480, 2, 12587500, 1, 1);
+};
+
+const int VgaMode_vga_mode_360x200[12]={ 
+ 8,54,28,360,11,2,32,400,2,14161000,0,1 //funciona con 0,1
+ //const Mode VGA::MODE360x200(8, 54, 28, 360, 11, 2, 32, 400, 2, 14161000, 1, 0);
+};
+
+const int VgaMode_vga_mode_400x300[12]={
+ 12,36,64,400,1,2,22,600,2,18000000,0,0
+};
+
 
 //extern const int VgaMode_vga_mode_200x150[12];
 
