@@ -11,12 +11,14 @@ I have made several modifications:
   <li>Any digital pin can be used for video (hardware.h).</li>
   <li>Emulation video speed menu, VGA, keyboard.</li>
   <li>Support for 64-color (6-bit DAC) and 8-color (3-bit DAC) modes.</li>
-  <li>VGA 320x200.</li>
+  <li>VGA 320x200 and 360x200 bitluni, as well as 320x200 with fabgl parameters.</li>
+  <li>Option to remove IEEE rounding calculation (double) from VGA</li>
   <li>Uploading of pfiles.</li>
   <li>The complete bitluni library is not required. I have reduced to the minimum, saving RAM and FLASH, based on Ricardo Massaro's library.</li>
   <li>Hi-res and pseudo hi-res mode support.</li>
   <li>Support CVBS PAL NTSC Black and White on TTGO VGA32 board (pin 26 CLK PS/2)</li>
   <li>The default CVBS mode has no border and comes out in inverted color mode, so that it can be viewed on the largest number of TVs without problems.</li>
+  <li>Web Editor and ArduinoDroid (6.3.1) compatible project with tool makeandroid.bat</li>
   <li>The OSD is brought up with the <b>F1</b> key.</li>
   <li>
    keyboard mapped
@@ -37,8 +39,8 @@ I have made several modifications:
  
 <br><br>
 <h1>Pre-compiled version</h1>
-In the precompile folder there is a version already compiled to be recorded with the flash download tool 3.9.2. It is a VGA 320x200 version with the demo games in FLASH.<br><br>
-<a href='https://github.com/rpsubc8/ESP32TinyMCUMEesp81/tree/main/ESP32/precompile/vga320x200'>https://github.com/rpsubc8/ESP32TinyMCUMEesp81/tree/main/ESP32/precompile/vga320x200</a>
+In the precompile folder there are several versions already compiled to be able to be recorded with the flash download tool 3.9.2. with the FLASH demo games.<br><br>
+<a href='https://github.com/rpsubc8/ESP32TinyMCUMEesp81/tree/main/ESP32/precompile'>https://github.com/rpsubc8/ESP32TinyMCUMEesp81/tree/main/ESP32/precompile</a>
 <br><br>
 We must choose the ESP32 type:
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/flash00.gif'></center>
@@ -58,8 +60,22 @@ Required:
   <li>Arduino bitluni 0.3.3 reduced library (included in project)</li>
  </ul>
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/ttgovga32v12.jpg'></center> 
-<br>
 
+
+<br><br>
+<h1>ArduinoDroid</h1>
+You must run, just once, the script makeandroid.bat, which leaves the entire data structure of the dataFlash directory in the root directory, as well as replacing the main files with .h calls without using the dataFlash data directory.<br>
+At the end, the script itself ends up deleting the dataFlash directory.<br>
+The script uses fart.exe (find and replace text).<br>
+Once, it has been successfully executed, it can be used with the ArduinoDroid.
+
+
+<br><br>
+<h1>Arduino Web Editor</h1>
+The makeandroid.bat script must be run once only. Once finished, it is uploaded to the cloud as any other project, either compressed in zip or by files.
+
+
+<br><br>
 <h1>PlatformIO</h1>
 PLATFORMIO 2.5.0 must be installed from the Visual Studio extensions. Espressif32 v3.5.0 is also required.
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewPlatformIOinstall.gif'></center>
@@ -101,6 +117,13 @@ The <b>gbConfig.h</b> file options are selected:
  <li><b>use_lib_cvbs_ttgo_vga32:</b> The TTGO VGA32 board uses a 5 volt output, instead of 3v. Therefore, said line must be uncommented if the TV output is used, in order to reduce the DAC output to 1 volt.</li>
  <li><b>use_lib_cvbs_ttgo_vga32_bright:</b> If the DAC output on the 5v TTGO VGA32 is very low, activating this option can increase the brightness a bit. Use with care, as the CVBS standard is 1 volt.</li>
  <li><b>use_lib_invert_color_default_value:</b> It allows color inversion, that is, white for black. In CVBS mode, it is inverted by default. Its values are 1 or 0.</li>
+ <li><b>use_lib_stats_time_unified</b> Allows you to view serial port traces with fps, as well as current, minimum and maximum microseconds per frame. The same for video.</li>
+ <li><b>use_lib_fix_double_precision</b> It doesn't use the VGA video frequency calculation with the ESP32 itself, avoiding possible accuracy problems with the mantissa. This is useful for ESP32's that miscalculate the frequency.</li>
+ <li><b>use_lib_debug_i2s</b> Plot with video mode calculations.</li>
+ <li><b>use_lib_vga360x200x70hz_bitluni</b> 360x200 video mode with bitluni parameters.</li>
+ <li><b>use_lib_vga320x200x70hz_bitluni</b> 320x200 video mode with bitluni parameters.</li>
+ <li><b>use_lib_vga320x200x70hz_fabgl</b> 320x200 mode with fabgl parameters.</li>
+ <li><b>use_lib_border_x</b> Scrolls the screen in multiples of 4 pixels, useful for 360x200 video mode. Do not exceed a value of 10, as this will overflow the buffer.</li> 
  </ul> 
 
 
