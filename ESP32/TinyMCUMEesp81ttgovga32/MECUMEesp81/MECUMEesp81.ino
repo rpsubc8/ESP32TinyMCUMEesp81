@@ -2,7 +2,8 @@
 //Author: Ackerman
 //License: WTFPL
 //Load Pfile
-//VGA MODE320x200
+//VGA MODE320x200 MODE360x200 320x200 fabgl
+//Project compatible Arduino Editor and ArduinoDroid (makeandroid.bat)
 //Mode 64 colors RGB 6 bits, 8 colors 3 bits
 //Visual Studio 1.66.1 PLATFORMIO 2.5.0 Espressif32 v3.5.0
 //Arduino IDE 1.8.11 Espressif System 1.0.6

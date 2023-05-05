@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "gbConfig.h"
 #include "gbGlobals.h"
-#include "z80.h"
+#include "Z80.h"
 #include "zx81.h"
 //JJ #include "zx80rom.h"
 //JJ #include "zx81rom.h"
