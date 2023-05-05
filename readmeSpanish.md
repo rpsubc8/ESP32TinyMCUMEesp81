@@ -11,12 +11,14 @@ He realizado varias modificaciones:
  <li>Se puede usar cualquier pin digital para el video (hardware.h)</li> 
  <li>Menú de velocidad de video de emulación, VGA, teclado</li>
  <li>Soporte para modo 64 colores (DAC 6 bits) y 8 colores (DAC 3 bits).</li>    
- <li>VGA 320x200</li>
+ <li>VGA 320x200 y 360x200 de bitluni, así como 320x200 con parámetros de fabgl</li>
+ <li>Opción de eliminar el cálculo de redondeo IEEE (double) de la VGA</li> 
  <li>Carga de ficheros pfiles</li>
  <li>No se requiere la libreria de bitluni completa. He reducido a lo mínimo, ahorrando RAM y FLASH, basado en la librería de Ricardo Massaro</li> 
  <li>Soporte modo Hi-res y pseudo hi-res</li> 
  <li>Soporte CVBS PAL NTSC Blanco y Negro en placa TTGO VGA32 (pin 26 CLK PS/2)</li>
  <li>El modo CVBS por defecto no tiene borde y sale en modo invertido de color, para que se puede ver en el mayor número de TV sin problemas.</li>
+ <li>Proyecto compatible con Web Editor y ArduinoDroid (6.3.1) con tool makeandroid.bat</li>
  <li>El OSD se muestra con la tecla <b>F1</b></li>
  <li>
    Teclado mapeado
@@ -38,7 +40,7 @@ He realizado varias modificaciones:
 
 <br><br>
 <h1>Versión precompilada</h1>
-En la carpeta precompile se encuentra una versión ya compilada para poder ser grabada con el flash download tool 3.9.2. Se trata de una versión VGA 320x200 con los juegos de demostración en FLASH.<br><br>
+En la carpeta precompile se encuentran varias versiones ya compiladas para poder ser grabada con el flash download tool 3.9.2. con los juegos de demostración en FLASH.<br><br>
 <a href='https://github.com/rpsubc8/ESP32TinyMCUMEesp81/tree/main/ESP32/precompile/vga320x200'>https://github.com/rpsubc8/ESP32TinyMCUMEesp81/tree/main/ESP32/precompile/vga320x200</a>
 <br><br>
 Debemos de elegir el tipo ESP32:
@@ -60,7 +62,21 @@ Se requiere:
  </ul>
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/ttgovga32v12.jpg'></center> 
 <br>
- 
+
+
+<br><br>
+<h1>ArduinoDroid</h1>
+Se debe ejecutar, sólo una vez, el script makeandroid.bat, que nos deja toda la estructura de datos del directorio dataFlash en el directorio raiz, así como reemplazando las archivos principales con llamadas de los .h sin usar el directorio de datos dataFlash.<br>
+Al finalizar, el propio script, termina borrando el directorio dataFlash.<br>
+El script utiliza el fart.exe (find and replace text).<br>
+Una vez, se haya ejecutado con éxito, se puede usar con el ArduinoDroid.
+
+
+<br><br>
+<h1>Arduino Web Editor</h1>
+Se debe ejecutar, sólo una vez, el script makeandroid.bat. Una vez finalizado, se sube a la nube como un proyecto cualquiera, ya sea comprimido en zip o por archivos.
+
+
  
 <h1>PlatformIO</h1>
 Se debe instalar el PLATFORMIO 2.5.0 desde las extensiones del Visual Studio. Se requiere también Espressif32 v3.5.0. 
@@ -105,6 +121,13 @@ El archivo <b>gbConfig.h</b> se seleccionan las opciones:
  <li><b>use_lib_cvbs_ttgo_vga32_bright:</b> Si la salida del DAC en la TTGO VGA32 de 5v, es muy bajo, si se activa esta opción se puede incrementar un poco el brillo. Usar con cuidado, dado que la norma CVBS es de 1 voltio.</li>
  <li><b>use_lib_invert_color_default_value:</b> Permite la inversión de color, es decir, blanco por negro. En el modo CVBS por defecto está invertido. Sus valores son 1 o 0.</li>
 </ul>
+ <li><b>use_lib_stats_time_unified</b> Permite ver trazas por el puerto serie con los fps, así como microsegundos actuales, mínimos y máximos por frame. Lo mismo para el video.</li>
+ <li><b>use_lib_fix_double_precision</b> No usa el cálculo de frecuencia de video VGA con el propio ESP32, evitando posibles problemas de precisión con la mantisa. Es útil para ESP32's que calculen mal la frecuencia.</li>
+ <li><b>use_lib_debug_i2s</b> Traza con los cálculos del modo de video.</li>
+ <li><b>use_lib_vga360x200x70hz_bitluni</b> Modo de video 360x200 con los parámetros de bitluni.</li>
+ <li><b>use_lib_vga320x200x70hz_bitluni</b> Modo de video 320x200 con los parámetros de bitluni.</li>
+ <li><b>use_lib_vga320x200x70hz_fabgl</b> Modo 320x200 con los parámetros de fabgl.</li>
+ <li><b>use_lib_border_x</b> Desplaza en múltiplos de 4 pixels la pantalla, útil para el modo de video 360x200. No exceder el valor 10, ya que se saldría del buffer.</li>
 
 <br><br>
 <h1>DIY circuito</h1>
