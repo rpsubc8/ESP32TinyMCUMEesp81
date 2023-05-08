@@ -274,28 +274,28 @@ void PreparaColorVGA()
  }
  
  //***********************************************************
- void SDLClearCVBS()
- {
-  //#define gb_topeX 320
-  //#define gb_topeY 200
-  //#ifdef use_lib_video_2bpp
-  // //DIV 4 2 bpp
-  // #define gb_topeX_div4 20  
-  //#else
-  // #define gb_topeX_div4 80  
-  //#endif 
-
-  //unsigned int a32= gb_const_colorNormal[0];
-  //unsigned int a32= 0;
-  //a32= a32|(a32<<8)|(a32<<16)|(a32<<24);
-  for (int y=0; y<200; y++){
-   for (int x=0; x<80; x++)
-   {   
-    //gb_buffer_cvbs32[y][x]= a32;
-    gb_buffer_cvbs32[y][x]= 0;
-   }
-  }
- }
+ //void SDLClearCVBS()
+ //{
+ // //#define gb_topeX 320
+ // //#define gb_topeY 200
+ // //#ifdef use_lib_video_2bpp
+ // // //DIV 4 2 bpp
+ // // #define gb_topeX_div4 20  
+ // //#else
+ // // #define gb_topeX_div4 80  
+ // //#endif
+ //
+ // //unsigned int a32= gb_const_colorNormal[0];
+ // //unsigned int a32= 0;
+ // //a32= a32|(a32<<8)|(a32<<16)|(a32<<24);
+ // for (int y=0; y<200; y++){
+ //  for (int x=0; x<80; x++)
+ //  {   
+ //   //gb_buffer_cvbs32[y][x]= a32;
+ //   gb_buffer_cvbs32[y][x]= 0;
+ //  }
+ // }
+ //}
 #endif
 
 
@@ -337,7 +337,8 @@ void setup()
    Serial.printf("Sync bits:0x%02X\r\n",gb_sync_bits);
   #endif 
   PreparaColorVGA();
-  SDLClear();
+  //SDLClear();
+  SDLSetBorder();
   //En 320x200 sale bits:0x80 y deberia ser 0x40
   //En 320x240 sale bits:0xC0
  #else
@@ -391,7 +392,8 @@ void setup()
   gb_buffer_cvbs= (unsigned char **)graphics.backbuffer;
   gb_buffer_cvbs32= (unsigned int **)graphics.backbuffer;
   PreparaColorCVBS();
-  SDLClearCVBS();
+  //SDLClearCVBS();
+  SDLSetBorderCVBS();
   graphics.begin(0);
   graphics.fillRect(0, 0, 319, 199, 0);
   graphics.end();

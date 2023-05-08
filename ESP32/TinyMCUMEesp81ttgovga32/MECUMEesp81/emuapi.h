@@ -140,7 +140,7 @@ extern void emu_DrawVsync(void);
  //void IRAM_ATTR jj_direct_writeLine(int width, int height, int y, unsigned char *buf);
  void jj_direct_writeLine(int width, int height, int y, unsigned char *buf);
 #endif
-void jj_fast_putpixel(short int x,short int y,unsigned char c);
+//void jj_fast_putpixel(short int x,short int y,unsigned char c);
 void emu_Init_Flash(unsigned char id);
 
 #endif

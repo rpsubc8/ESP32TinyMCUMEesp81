@@ -172,26 +172,110 @@ const char * gb_reset_menu[max_gb_reset_menu]={
 //}
 
 
+
+//***************************************************************************
+inline void jj_fast_putpixel(short int x,short int y,unsigned char c)
+{
+ #ifdef use_lib_tinybitluni_fast
+  gb_buffer_vga[y][x^2]= gb_color_vga[c];
+ #else
+  #ifdef use_lib_cvbs_bitluni   
+   gb_buffer_cvbs[y][x]= gb_color_cvbs[(c & 0x01)];
+  #endif
+ #endif 
+}
+
+
+#ifdef use_lib_cvbs_bitluni
+ //***********************************************************
+ void SDLClearCVBS()
+ {
+  //#define gb_topeX 320
+  //#define gb_topeY 200
+  //#ifdef use_lib_video_2bpp
+  // //DIV 4 2 bpp
+  // #define gb_topeX_div4 20  
+  //#else
+  // #define gb_topeX_div4 80  
+  //#endif 
+
+  //unsigned int a32= gb_const_colorNormal[0];
+  //unsigned int a32= 0;
+  //a32= a32|(a32<<8)|(a32<<16)|(a32<<24);
+  for (int y=0; y<200; y++)
+  {
+   for (int x=0; x<80; x++)
+   {       
+    gb_buffer_cvbs32[y][x]= 0;
+   }
+  }
+ }
+
+ //**********************************************
+ void SDLSetBorderCVBS()
+ {
+  unsigned char aCol=1;
+  if (gb_invert_color == 1){
+   aCol= (~aCol)&0x01;
+  }
+
+  unsigned int a32= gb_color_cvbs[aCol];  
+  a32= a32|(a32<<8)|(a32<<16)|(a32<<24);   
+  for (int y=0; y<200; y++)
+  {
+   for (int x=0; x<80; x++)
+   {       
+    gb_buffer_cvbs32[y][x]= aCol;
+   }
+  }   
+ }
+#endif
+
+//**********************************************
 void SDLClear()
 {
- //for (int y=0; y<(auxSurface->w); y++)
- // for (int x=0; x<(auxSurface->h); x++)
- //  SDLputpixel(auxSurface,x,y,1);
- //for (int y=0; y<200; y++)
- // for (int x=0; x<320; x++)
- for (int y=0; y<200; y++)
- {
-  #ifdef use_lib_vga360x200
-   for (int x=0; x<360; x++)
-  #else
-   for (int x=0; x<320; x++)
-  #endif
-   {
-    jj_fast_putpixel(x,y,0);
-   }   
- }
- //SDLputpixel(auxSurface,x,y,3);  
+ #ifdef use_lib_cvbs_bitluni
+  SDLClearCVBS();
+ #else
+  for (int y=0; y<200; y++)
+  {
+   #ifdef use_lib_vga360x200
+    for (int x=0; x<360; x++)
+   #else
+    for (int x=0; x<320; x++)
+   #endif
+    {
+     jj_fast_putpixel(x,y,0);
+    }   
+  } 
+ #endif
 }
+
+//***************************************
+void SDLSetBorder()
+{
+ unsigned char aCol=1;
+ if (gb_invert_color == 1){
+  aCol= (~aCol)&0x01;
+ }
+
+ #ifdef use_lib_cvbs_bitluni
+  SDLSetBorderCVBS();
+ #else
+  for (int y=0; y<200; y++)
+  {
+   #ifdef use_lib_vga360x200
+    for (int x=0; x<360; x++)
+   #else
+    for (int x=0; x<320; x++)
+   #endif
+    {
+     jj_fast_putpixel(x,y,aCol);
+    }   
+  } 
+ #endif
+}
+
 
 //*************************************************************************************
 void SDLprintCharOSD(char car,int x,int y,unsigned char color,unsigned char backcolor)
@@ -626,7 +710,8 @@ void do_tinyOSD()
   }  
  }
 
- SDLClear();
+ //SDLClear();
+ SDLSetBorder(); //TRuco rapido borde color
  
  #ifdef use_lib_sound_ay8912
   gb_silence_all_channels = 0;

@@ -1162,26 +1162,26 @@ void emu_DrawVsync(void)
 }
 
 //***************************************************************************
-void jj_fast_putpixel(short int x,short int y,unsigned char c)
-{
- //if ((x<0)||(y<0)||(x >= 320) || (y >= 200))
- //{
- // //printf("Clip x:%d y:%d\n",x,y);
- // //fflush(stdout);
- // return;
- //}
- #ifdef use_lib_tinybitluni_fast
-  gb_buffer_vga[y][x^2]= gb_color_vga[c];
- #else
-  #ifdef use_lib_cvbs_bitluni
-   //gb_buffer_cvbs[y][x]= gb_color_cvbs[(c==0)?0:7];
-   gb_buffer_cvbs[y][x]= gb_color_cvbs[(c & 0x01)];
-  #endif
- #endif 
- 
- //Uint8* p = (Uint8*)screen->pixels + (y * screen->pitch) + x;
- //*p= c;
-}
+//void jj_fast_putpixel(short int x,short int y,unsigned char c)
+//{
+// //if ((x<0)||(y<0)||(x >= 320) || (y >= 200))
+// //{
+// // //printf("Clip x:%d y:%d\n",x,y);
+// // //fflush(stdout);
+// // return;
+// //}
+// #ifdef use_lib_tinybitluni_fast
+//  gb_buffer_vga[y][x^2]= gb_color_vga[c];
+// #else
+//  #ifdef use_lib_cvbs_bitluni
+//   //gb_buffer_cvbs[y][x]= gb_color_cvbs[(c==0)?0:7];
+//   gb_buffer_cvbs[y][x]= gb_color_cvbs[(c & 0x01)];
+//  #endif
+// #endif 
+// 
+// //Uint8* p = (Uint8*)screen->pixels + (y * screen->pitch) + x;
+// //*p= c;
+//}
 
 
 //JJ int fb_width = 320;
