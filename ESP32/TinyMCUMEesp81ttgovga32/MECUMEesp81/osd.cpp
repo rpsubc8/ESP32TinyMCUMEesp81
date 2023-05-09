@@ -220,14 +220,37 @@ inline void jj_fast_putpixel(short int x,short int y,unsigned char c)
   }
 
   unsigned int a32= gb_color_cvbs[aCol];  
-  a32= a32|(a32<<8)|(a32<<16)|(a32<<24);   
-  for (int y=0; y<200; y++)
-  {
-   for (int x=0; x<80; x++)
-   {       
-    gb_buffer_cvbs32[y][x]= aCol;
+  a32= a32|(a32<<8)|(a32<<16)|(a32<<24);
+  
+  #ifdef use_lib_cvbs_bitluni_border
+   //Si activamos border rellena todo blanco
+   for (int y=0; y<200; y++)
+   {
+    for (int x=0; x<80; x++)
+    {       
+     gb_buffer_cvbs32[y][x]= a32;
+    }
+   }  
+  #else
+   //No queremos borde
+   unsigned int x=0;
+   for (unsigned int y=0; y<200; y++)
+   {
+    x=0;
+    for (unsigned char i=0;i<8;i++)
+    {
+     gb_buffer_cvbs32[y][x++]= 0;
+    }
+    for (unsigned char i=0;i<64;i++)
+    {
+     gb_buffer_cvbs32[y][x++]= a32;
+    }    
+    for (unsigned char i=0;i<8;i++)
+    {
+     gb_buffer_cvbs32[y][x++]= 0;
+    }
    }
-  }   
+  #endif    
  }
 #endif
 
