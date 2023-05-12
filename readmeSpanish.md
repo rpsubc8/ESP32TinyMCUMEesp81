@@ -148,7 +148,9 @@ El archivo <b>gbConfig.h</b> se seleccionan las opciones:
  <li><b>use_lib_vga320x200x70hz_bitluni</b> Modo de video 320x200 con los parámetros de bitluni.</li>
  <li><b>use_lib_vga320x200x70hz_fabgl</b> Modo 320x200 con los parámetros de fabgl.</li>
  <li><b>use_lib_border_x</b> Desplaza en múltiplos de 4 pixels la pantalla, útil para el modo de video 360x200. No exceder el valor 10, ya que se saldría del buffer.</li>
+ <li><b>use_lib_keyboard_uart:</b> Permite usar el teclado del PC desde el PC por terminal monitor VStudio o desde el putty, sin falta de tener teclado. Útil para no tener que usar el teclado físico PS/2 y para desarrollo.</li>
  </ul>
+
 
 <br><br>
 <h1>DIY circuito</h1>
