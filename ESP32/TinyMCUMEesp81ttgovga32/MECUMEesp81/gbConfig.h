@@ -7,6 +7,17 @@
  //Debug i2s bitluni vga frequency
  //#define use_lib_debug_i2s
 
+ //Use terminal keyboard, putty
+ //#define use_lib_keyboard_uart
+ 
+ //timeout read millis
+ #define use_lib_keyboard_uart_timeout 0
+
+
+ //log keyboard remote uart 
+ //#define use_lib_log_keyboard_uart
+
+
  //Video mode selection VGA
  //Select one mode and deselect other modes
  //360x200 720x400 31.3 Khz 70.3 Hz freq:28322000 pixel_clock:14161000
@@ -88,6 +99,8 @@
  #define gb_ms_blit_poll 20
  //No necesito vga ms poll pero lo dejo
  #define use_lib_vga_poll_milis 20
+ //Poll keyboard remote uart
+ #define gb_current_ms_poll_keyboard_uart 50  
  
 
  //#define gb_ms_vga_poll 20

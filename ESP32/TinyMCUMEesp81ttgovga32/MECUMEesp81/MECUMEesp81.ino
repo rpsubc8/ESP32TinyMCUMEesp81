@@ -189,12 +189,141 @@ unsigned char gb_keyboard_cur_poll_ms= (use_lib_keyboard_poll_milis==0)?0:(use_l
 unsigned char gb_vga_cur_poll_ms= (use_lib_vga_poll_milis==0)?0:(use_lib_vga_poll_milis-1);
 unsigned char gb_blit_cur_poll_ms= (gb_ms_blit_poll==0)?0:(gb_ms_blit_poll-1);
 
+#ifdef use_lib_keyboard_uart
+ unsigned int gb_curTime_keyboard_before_uart;
+ unsigned int gb_curTime_keyboard_uart;
+ void do_keyboard_uart(void);
+#endif 
+
 //Funciones
 void Setup(void);
 void Poll_Keyboard(void);
 void PreparaColorVGA(void);
 //void SDL_DumpVGA(void);
 
+
+#ifdef use_lib_keyboard_uart
+ char gb_buf_uart[BUFFER_SIZE_UART];
+ unsigned char gb_rlen_uart=0;
+
+ void do_keyboard_uart()
+ {
+  unsigned int contBuf=0;
+  if (gb_rlen_uart>0)
+  {
+   while (contBuf < gb_rlen_uart)
+   {
+    switch (gb_buf_uart[contBuf])
+    {
+     case 0x01: //F2   01 62 4F 51      
+      if ((contBuf+3) < gb_rlen_uart)
+      {
+       gb_show_osd_main_menu= 1;
+       contBuf+= 3;
+      }
+      break;
+
+     case 0x09: //TAB saco menu tambien
+      gb_show_osd_main_menu= 1;      
+      break;
+
+     case 0x0D: case 0x0A: //0D 0A ENTER 
+      keyboard[6]&= 0xFE; //ENTER
+      break;
+
+     case 0x2B: 
+      keyboard[3]&= 0xFE; //El + como ALT_GR
+      break;
+
+     case 0x1B: //Arriba 1B 5B 41
+      if ((contBuf+2) < gb_rlen_uart)
+      {
+       contBuf++;
+       if (gb_buf_uart[contBuf] == 0x5B)
+       {
+        contBuf++;
+        switch (gb_buf_uart[contBuf])
+        {
+         case 0x41: 
+          keyboard[4]&= 0xF7; //kempston arriba //SHIFT + 7
+          //arriba 1B 5B 41
+          break;
+         case 0x42: 
+          keyboard[4]&= 0xEF;  //kempston abajo //SHIFT + 6
+          break; //abajo 1B 5B 42
+         case 0x43: 
+          keyboard[4]&= 0xFB; //derecha 1B 5B 43 //SHIFT + 8
+          break;
+         case 0x44: 
+          keyboard[3]&= 0xEF; //izquierda 1B 5B 44 //SHIFT + 5
+          break; 
+        }
+       }
+      }
+      break;       
+
+     //row0
+     case 0x2D: keyboard[0]&= 0xFE; break; //SHIFT LEFT -
+     case 0x7A: case 0x5A: keyboard[0]&= 0xFD; break; //Z
+     case 0x78: case 0x58: keyboard[0]&= 0xFB; break; //X
+     case 0x63: case 0x43: keyboard[0]&= 0xF7; break; //C
+     case 0x76: case 0x56: keyboard[0]&= 0xEF; break; //V
+
+     //row 1
+     case 0x61: case 0x41: keyboard[1]&= 0xFE; break; //A
+     case 0x73: case 0x53: keyboard[1]&= 0xFD; break; //S
+     case 0x64: case 0x44: keyboard[1]&= 0xFB; break; //D
+     case 0x66: case 0x46: keyboard[1]&= 0xF7; break; //F
+     case 0x67: case 0x47: keyboard[1]&= 0xEF; break; //G
+
+     //row 2
+     case 0x71: case 0x51: keyboard[2]&= 0xFE; break; //Q
+     case 0x77: case 0x57: keyboard[2]&= 0xFD; break; //W
+     case 0x65: case 0x45: keyboard[2]&= 0xFB; break; //E
+     case 0x72: case 0x52: keyboard[2]&= 0xF7; break; //R
+     case 0x74: case 0x54: keyboard[2]&= 0xEF; break; //T
+
+     //row 3
+     case 0x31: keyboard[3]&= 0xFE; break; //1
+     case 0x32: keyboard[3]&= 0xFD; break; //2
+     case 0x33: keyboard[3]&= 0xFB; break; //3
+     case 0x34: keyboard[3]&= 0xF7; break; //4
+     case 0x35: keyboard[3]&= 0xEF; break; //5       
+
+     //row 4
+     case 0x30: keyboard[4]&= 0xFE; break; //0
+     case 0x39: keyboard[4]&= 0xFD; break; //9
+     case 0x38: keyboard[4]&= 0xFB; break; //8
+     case 0x37: keyboard[4]&= 0xF7; break; //7
+     case 0x36: keyboard[4]&= 0xEF; break; //6
+
+     //row 5
+     case 0x70: case 0x50: keyboard[5]&= 0xFE; break; //P
+     case 0x6F: case 0x4F: keyboard[5]&= 0xFD; break; //O
+     case 0x69: case 0x49: keyboard[5]&= 0xFB; break; //I
+     case 0x75: case 0x55: keyboard[5]&= 0xF7; break; //U     
+     case 0x79: case 0x59: keyboard[5]&= 0xEF; break; //Y   
+
+     //row 6
+     //if (!keymap[PS2_KC_ENTER] || !keymap[PS2_KC_KP_ENTER]) { keyboard[6]&= 0xFE; } //ENTER
+     case 0x6C: case 0x4C: keyboard[6]&= 0xFD; break; //L
+     case 0x6B: case 0x4B: keyboard[6]&= 0xFB; break; //K
+     case 0x6A: case 0x4A: keyboard[6]&= 0xF7; break; //J
+     case 0x68: case 0x48: keyboard[6]&= 0xEF; break; //H       
+
+     //row 7
+     case 0x20: keyboard[7]&= 0xFE; break; //SPACE
+     case 0x2E: keyboard[7]&= 0xFD; break; //.
+     case 0x6D: case 0x4D: keyboard[7]&= 0xFB; break; //M
+     case 0x6E: case 0x4E: keyboard[7]&= 0xF7; break; //N
+     case 0x62: case 0x42: keyboard[7]&= 0xEF; break; //B     
+
+    }//fin switch gb_buf_uart
+    contBuf++;
+   }//fin while contBuf   
+  }//fin if gb_rlen_uart
+ }
+#endif
 
 //****************************
 //void SDL_DumpVGA(void)
@@ -307,11 +436,15 @@ void setup()
  // //REG_WRITE(GPIO_OUT_W1TC_REG , BIT25); //LOW clear
  // digitalWrite(SPEAKER_PIN, LOW);
  //#endif 
-
- #ifdef use_lib_log_serial
+ 
+ #if defined(use_lib_log_serial) || defined(use_lib_keyboard_uart)
   Serial.begin(115200);         
   Serial.printf("HEAP BEGIN %d\r\n", ESP.getFreeHeap()); 
  #endif
+
+ #ifdef use_lib_keyboard_uart
+  Serial.setTimeout(use_lib_keyboard_uart_timeout);
+ #endif 
  
  #ifdef use_lib_tinybitluni_fast  
   //void vga_init(const int *pin_map, const VgaMode &mode, bool double_buffered)
@@ -421,9 +554,13 @@ void setup()
  autoload=0;//Para dejar BASIC
  ResetZ80_Flash(0);
 
+ #ifdef use_lib_keyboard_uart
+  gb_curTime_keyboard_before_uart= gb_curTime_keyboard_uart= tiempo_ini_keyboard;
+ #endif 
+
  #ifdef use_lib_log_serial  
   Serial.printf("END SETUP %d\r\n", ESP.getFreeHeap()); 
- #endif 
+ #endif  
 }
 
 //***************************************
@@ -585,6 +722,16 @@ void loop()
   {
    tiempo_ini_keyboard= tiempo_cur_keyboard; 
    Poll_Keyboard();
+
+   #ifdef use_lib_keyboard_uart       
+    gb_curTime_keyboard_uart= tiempo_cur_keyboard;
+    if ((gb_curTime_keyboard_uart - gb_curTime_keyboard_before_uart) >= gb_current_ms_poll_keyboard_uart)
+    {
+     gb_curTime_keyboard_before_uart= gb_curTime_keyboard_uart;
+     keyboard_uart_poll();
+    }
+    do_keyboard_uart();
+   #endif   
   }  
   tiempo_ini_cpu= millis();
   jj_ini_cpu = micros();

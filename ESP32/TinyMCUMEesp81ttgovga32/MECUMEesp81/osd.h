@@ -18,4 +18,9 @@
   void SDLSetBorderCVBS(void);
  #endif
 
+ #ifdef use_lib_keyboard_uart
+  void keyboard_uart_poll(void);
+  unsigned char checkKey_uart(unsigned char scancode);
+ #endif 
+
 #endif

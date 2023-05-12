@@ -173,6 +173,96 @@ const char * gb_reset_menu[max_gb_reset_menu]={
 
 
 
+#ifdef use_lib_keyboard_uart
+ void keyboard_uart_poll()
+ {
+  if(Serial.available() > 0)
+  {
+   gb_rlen_uart = Serial.readBytes(gb_buf_uart, BUFFER_SIZE_UART);
+
+   //Serial.print("OSD I received: ");
+   gb_buf_uart[gb_rlen_uart]='\0';
+   #ifdef use_lib_log_keyboard_uart
+    Serial.printf("UART key tot:%d\r\nASCII:%s\r\n",gb_rlen_uart,gb_buf_uart);        
+    for (unsigned short int i=0;i<gb_rlen_uart;i++)
+    {
+     Serial.printf("%02X ",gb_buf_uart[i]);
+    }
+    Serial.printf("\r\n"); 
+   #endif 
+  }
+  else
+  {
+   gb_rlen_uart=0;
+   gb_buf_uart[0]='\0';
+  }  
+ }
+
+ unsigned char checkKey_uart(unsigned char scancode)
+ {
+  unsigned int contBuf=0;
+  unsigned char toReturn= 0;
+  //if(Serial.available() > 0)
+  //{
+  // gb_rlen_uart = Serial.readBytes(gb_buf_uart, BUFFER_SIZE_UART);
+  //
+  // Serial.print("OSD I received: ");
+  // gb_buf_uart[gb_rlen_uart]='\0';
+  // Serial.printf("OSD Tot:%d\nASCII:%s\n",gb_rlen_uart,gb_buf_uart);     
+  // Serial.printf("\n"); 
+   
+   //for(contBuf= 0; contBuf < gb_rlen_uart; contBuf++)
+   //Serial.printf("OSD check tot:%d\n",gb_rlen_uart);
+   while (contBuf < gb_rlen_uart)
+   {
+    //Serial.printf("%02X ",gb_buf_uart[contBuf]);
+    switch (gb_buf_uart[contBuf])
+    {
+     case 0x1B: //Arriba 1B 5B 41
+      if ((contBuf+2) < gb_rlen_uart)
+      {
+       contBuf++;
+       if (gb_buf_uart[contBuf] == 0x5B)
+       {
+        contBuf++;
+        switch (gb_buf_uart[contBuf])
+        {
+         case 0x41: toReturn = (scancode == KEY_CURSOR_UP) ? 1 : 0; break; //arriba 1B 5B 41
+         case 0x42: toReturn = (scancode == KEY_CURSOR_DOWN) ? 1 : 0; break; //abajo 1B 5B 42
+         case 0x43: toReturn = (scancode == KEY_CURSOR_RIGHT) ? 1 : 0; break; //derecha 1B 5B 43
+         case 0x44: toReturn = (scancode == KEY_CURSOR_LEFT) ? 1 : 0; break; //izquierda 1B 5B 44        
+        }
+       }
+      }
+      else
+      {       
+       toReturn = (scancode == KEY_ESC) ? 1 : 0; //ESC              
+      }
+      break;
+
+     case 0x0D: case 0x0A: //0D 0A ENTER
+      //if ((contBuf+1) < gb_rlen_uart)
+      //{
+      // contBuf++;
+      // if (gb_buf_uart[contBuf] == 0x0A)
+      // {
+      //  toReturn = (scancode == KEY_ENTER) ? 1 : 0; //ENTER
+      //  //contBuf++;
+      // }
+      //}
+       toReturn = (scancode == KEY_ENTER) ? 1 : 0; //ENTER
+      break;
+
+    }
+    contBuf++;
+   }
+  //}
+  //Serial.printf("\n");
+  return toReturn;
+ } 
+#endif 
+
+
 //***************************************************************************
 inline void jj_fast_putpixel(short int x,short int y,unsigned char c)
 {
@@ -353,6 +443,17 @@ unsigned char ShowTinyMenu(const char *cadTitle,const char **ptrValue,unsigned c
 {
  unsigned char aReturn=0;
  unsigned char salir=0;
+ unsigned int curTime_keyboard;
+ unsigned int curTime_keyboard_before;
+
+ #ifdef use_lib_keyboard_uart
+  unsigned int curTime_keyboard_uart;
+  unsigned int curTime_keyboard_before_uart;
+  curTime_keyboard_uart = curTime_keyboard_before_uart= millis();
+ #endif
+ 
+ curTime_keyboard= curTime_keyboard_before= millis();
+
  SDLClear();
  SDLprintText("MCUME ZX81 mod by Ackerman",gb_pos_x_menu-(4<<3),gb_pos_y_menu-16,ID_COLOR_WHITE,ID_COLOR_BLACK);
  //for (int i=0;i<20;i++) 
@@ -365,70 +466,84 @@ unsigned char ShowTinyMenu(const char *cadTitle,const char **ptrValue,unsigned c
  
  while (salir == 0)
  {
-  //SDL_PollEvent(gb_osd_sdl_event);
-  //if(SDL_WaitEvent(gb_osd_sdl_event))
+  //case SDLK_UP:
+  curTime_keyboard = millis();
+  if ((curTime_keyboard - curTime_keyboard_before) >= gb_keyboard_cur_poll_ms)
   {
-   //if(gb_osd_sdl_event->type == SDL_KEYDOWN)
-   {
-    //switch(gb_osd_sdl_event->key.keysym.sym)
+   curTime_keyboard_before= curTime_keyboard;
+
+   #ifdef use_lib_keyboard_uart
+    curTime_keyboard_uart= curTime_keyboard;
+    if ((curTime_keyboard_uart - curTime_keyboard_before_uart) >= gb_current_ms_poll_keyboard_uart)
     {
-     //case SDLK_UP:
-     if (checkAndCleanKey(KEY_CURSOR_LEFT))
+     curTime_keyboard_before_uart = curTime_keyboard_uart;
+     keyboard_uart_poll();
+    
+     if (checkKey_uart(KEY_CURSOR_LEFT)==1)
      {
       if (aReturn>10) aReturn-=10;
-      OSDMenuRowsDisplayScroll(ptrValue,aReturn,aMax);       
+      OSDMenuRowsDisplayScroll(ptrValue,aReturn,aMax);
      }
-     if (checkAndCleanKey(KEY_CURSOR_RIGHT))
+     if (checkKey_uart(KEY_CURSOR_RIGHT)==1)
      {
       if (aReturn<(aMax-10)) aReturn+=10;
       OSDMenuRowsDisplayScroll(ptrValue,aReturn,aMax);       
-     }
-          
-     if (checkAndCleanKey(KEY_CURSOR_UP))
+     }  
+     if (checkKey_uart(KEY_CURSOR_UP)==1)
      {
-      //vga.setTextColor(WHITE,BLACK);
-      //vga.setCursor(gb_pos_x_menu,gb_pos_y_menu+((aReturn+1)<<3));
-      //vga.print(ptrValue[aReturn]);
-      ////SDLprintText(gb_osd_sdl_surface,ptrValue[aReturn],gb_pos_x_menu,gb_pos_y_menu+((aReturn+1)<<3),WHITE,BLACK,1);
       if (aReturn>0) aReturn--;
       OSDMenuRowsDisplayScroll(ptrValue,aReturn,aMax);
-      //vga.setTextColor(CYAN,BLUE);
-      //vga.setCursor(gb_pos_x_menu,gb_pos_y_menu+((aReturn+1)<<3));
-      //vga.print(ptrValue[aReturn]);
-      ////SDLprintText(gb_osd_sdl_surface,ptrValue[aReturn],gb_pos_x_menu,gb_pos_y_menu+((aReturn+1)<<3),CYAN,BLUE,1);
-      ////break;
      }
-     if (checkAndCleanKey(KEY_CURSOR_DOWN))
+     if (checkKey_uart(KEY_CURSOR_DOWN)==1)
      {
-     //case SDLK_DOWN: 
-      //SDLprintText(gb_osd_sdl_surface,ptrValue[aReturn],gb_pos_x_menu,gb_pos_y_menu+((aReturn+1)<<3),WHITE,BLACK,1);
-      //vga.setTextColor(WHITE,BLACK);
-      //vga.setCursor(gb_pos_x_menu,gb_pos_y_menu+((aReturn+1)<<3));
-      //vga.print(ptrValue[aReturn]);
       if (aReturn < (aMax-1)) aReturn++;
       OSDMenuRowsDisplayScroll(ptrValue,aReturn,aMax);
-      //vga.setTextColor(CYAN,BLUE);
-      //vga.setCursor(gb_pos_x_menu,gb_pos_y_menu+((aReturn+1)<<3));
-      //vga.print(ptrValue[aReturn]);
-      ////SDLprintText(gb_osd_sdl_surface,ptrValue[aReturn],gb_pos_x_menu,gb_pos_y_menu+((aReturn+1)<<3),CYAN,BLUE,1);
-      ////break;
      }
-     if (checkAndCleanKey(KEY_ENTER))
+     if (checkKey_uart(KEY_ENTER)==1)
      {
       salir= 1;
      }
-     //case SDLK_KP_ENTER: case SDLK_RETURN: salir= 1;break;
-     if (checkAndCleanKey(KEY_ESC))
+     if (checkKey_uart(KEY_ESC))
      {
       salir=1; aReturn= 255;    
      }
-     //case SDLK_ESCAPE: salir=1; aReturn= 255; break;
-     //default: break;
     }
-    //SDL_Flip(gb_osd_sdl_surface);
-    //SDL_PollEvent(gb_osd_sdl_event);
-   }  
-  }  
+   #endif
+
+
+   if (checkAndCleanKey(KEY_CURSOR_LEFT))
+   {
+    if (aReturn>10) aReturn-=10;
+    OSDMenuRowsDisplayScroll(ptrValue,aReturn,aMax);       
+   }
+   if (checkAndCleanKey(KEY_CURSOR_RIGHT))
+   {
+    if (aReturn<(aMax-10)) aReturn+=10;
+    OSDMenuRowsDisplayScroll(ptrValue,aReturn,aMax);       
+   }
+          
+   if (checkAndCleanKey(KEY_CURSOR_UP))
+   {
+    if (aReturn>0) aReturn--;
+    OSDMenuRowsDisplayScroll(ptrValue,aReturn,aMax);
+   }
+   if (checkAndCleanKey(KEY_CURSOR_DOWN))
+   {
+    if (aReturn < (aMax-1)) aReturn++;
+    OSDMenuRowsDisplayScroll(ptrValue,aReturn,aMax);
+   }
+   if (checkAndCleanKey(KEY_ENTER))
+   {
+    salir= 1;
+   }
+   //case SDLK_KP_ENTER: case SDLK_RETURN: salir= 1;break;
+   if (checkAndCleanKey(KEY_ESC))
+   {
+    salir=1; aReturn= 255;    
+   }
+   //case SDLK_ESCAPE: salir=1; aReturn= 255; break;
+   //default: break;             
+  }
  } 
  gb_show_osd_main_menu= 0;
  return aReturn;

@@ -5,6 +5,15 @@
  //extern SDL_Surface *screen;
  #include "gbConfig.h"
  
+
+ #ifdef use_lib_keyboard_uart
+  #define BUFFER_SIZE_UART 50
+  extern char gb_buf_uart[BUFFER_SIZE_UART];
+  extern unsigned char gb_rlen_uart;
+  extern unsigned int gb_curTime_keyboard_before_uart;
+  extern unsigned int gb_curTime_keyboard_uart;
+ #endif
+
  extern unsigned char fskip;
 
  extern volatile unsigned char keymap[256];
