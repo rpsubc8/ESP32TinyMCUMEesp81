@@ -145,6 +145,7 @@ The <b>gbConfig.h</b> file options are selected:
  <li><b>use_lib_vga320x200x70hz_bitluni</b> 320x200 video mode with bitluni parameters.</li>
  <li><b>use_lib_vga320x200x70hz_fabgl</b> 320x200 mode with fabgl parameters.</li>
  <li><b>use_lib_border_x</b> Scrolls the screen in multiples of 4 pixels, useful for 360x200 video mode. Do not exceed a value of 10, as this will overflow the buffer.</li> 
+ <li><b>use_lib_keyboard_uart:</b> Allows you to use the PC keyboard from the PC via the VStudio monitor terminal or from putty, without having to have a keyboard. Useful for not having to use the physical PS/2 keyboard and for development.</li>
  </ul> 
 
 
