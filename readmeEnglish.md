@@ -20,6 +20,7 @@ I have made several modifications:
   <li>The default CVBS mode has no border and comes out in inverted color mode, so that it can be viewed on the largest number of TVs without problems.</li>
   <li>Web Editor and ArduinoDroid (6.3.1) compatible project with tool makeandroid.bat</li>
   <li>The OSD is brought up with the <b>F1</b> key.</li>
+  <li>Added keyboard support from usb serial terminal, VStudio monitor or putty.</li>
   <li>
    keyboard mapped
    <pre>
@@ -100,7 +101,27 @@ We must deactivate the PSRAM option, and in case of exceeding 1 MB of binary, se
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/previewMetropolis.gif'></center>
 
 
-<br>
+<br><br>
+<h1>UART keyboard</h1>
+If the option <b>use_lib_keyboard_uart</b> is activated, it allows to use the PC keyboard from the VStudio monitor or from the putty (115200 bauds), in a simple way, since it is not by reading SCANCODE down, up: 
+<ul>
+ <li><b>TAB key or F2 key:</b> Display OSD</li> 
+ <li><b>Space:</b> Space bar</li>
+ <li><b>ENTER:</b> Send ENTER on the ZX81</li>
+ <li><b>+:</b> Send ALT_GR</li>
+ <li><b>-:</b> Send SHIFT LEFT</li>
+ <li><b>.:</b> Send .</li> 
+ <li><b>Up:</b> SHIFT + 7 and Kempston Up</li>
+ <li><b>Down:</b> SHIFT + 6 and Kempston Down</li>
+ <li><b>Right:</b> Kempston right</li>
+ <li><b>Left:</b> Kempston left</li>
+ <li><b>A..Z, a..z: </b> a..z</li>
+ <li><b>0..9: </b> 0..9</li>
+</ul>
+From the Arduino IDE, this functionality is not allowed, since the serial monitor requires sending the ENTER for each action.
+
+
+<br><br>
 <h1>Options</h1>
 The <b>gbConfig.h</b> file options are selected:
  <ul>
