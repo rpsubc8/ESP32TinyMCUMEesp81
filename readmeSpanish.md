@@ -57,8 +57,7 @@ Se requiere:
  <ul>
   <li>TTGO VGA32 v1.x (1.0, 1.1, 1.2, 1.4)</li>
   <li>Visual Studio 1.66.1 PLATFORMIO 2.5.0 Espressif32 v3.5.0</li>
-  <li>Arduino IDE 1.8.11 Espressif System 1.0.6</li>
-  <li>Librería reducida Arduino fabgl 0.9.0 (incluida en proyecto PLATFORMIO)</li>
+  <li>Arduino IDE 1.8.11 Espressif System 1.0.6</li>  
   <li>Librería reducida Arduino bitluni 0.3.3 (incluida en proyecto)</li>
  </ul>
 <center><img src='https://raw.githubusercontent.com/rpsubc8/ESP32TinyMCUMEesp81/main/preview/ttgovga32v12.jpg'></center> 
